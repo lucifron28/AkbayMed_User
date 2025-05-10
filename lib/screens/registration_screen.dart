@@ -1,6 +1,9 @@
 // lib/screens/registration_screen.dart
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger();
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -63,9 +66,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Navigator.pop(context); // Go back to login screen
       }
     } catch (e) {
+      logger.e(e.toString());
       if (mounted) {
         setState(() {
-          _errorMessage = "Registration failed: ${e.toString()}";
+          _errorMessage = "Registration failed please try again";
+
         });
       }
     } finally {
