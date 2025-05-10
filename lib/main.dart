@@ -5,10 +5,13 @@ import 'app.dart';
 
 
 void main() async {
+  await dotenv.load(fileName: ".env");
+  final supabaseUrl = dotenv.env['SUPABASE_URL']!;
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://your-supabase-url.supabase.co',
-    anonKey: 'your-anon-key',
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
   );
   runApp(MyApp());
 }
