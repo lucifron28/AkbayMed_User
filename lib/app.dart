@@ -34,7 +34,7 @@ class MyAppState extends State<MyApp> {
       title: 'AkbayMed',
       theme: ThemeData(
         useMaterial3: true, // Material 3 design
-        primarySwatch: Colors.blue,
+        colorSchemeSeed: Colors.blue, // Primary color
       ),
       home: Scaffold(
         body: _screens[_selectedIndex], // Show selected screen
