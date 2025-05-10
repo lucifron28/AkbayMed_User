@@ -8,7 +8,15 @@ class  HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.black54,
+            height: 1.0,
+          ),
+        ),
       ),
+
       body: Center(
         child: const Text('Home Screen'),
       ),
