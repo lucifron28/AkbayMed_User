@@ -1,8 +1,10 @@
-// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'registration_screen.dart';
 import '../app.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,8 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
+      logger.e(e.toString());
       setState(() {
-        _errorMessage = 'Login failed: ${e.toString()}';
+        _errorMessage = 'Invalid credentials';
       });
     } finally {
       if (mounted) {
