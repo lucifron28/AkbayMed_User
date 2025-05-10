@@ -237,10 +237,10 @@ A Flutter Android app for medication donation and requests, built for a finals e
 1. Install Flutter: https://flutter.dev/docs/get-started/install
 2. Clone this repository.
 3. Create `.env` with Supabase credentials:
-   ```
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
-   ```
+```
+`SUPABASE_URL=https://your-project-id.supabase.com`
+`SUPABASE_ANON_KEY=your-anon-key`
+```
 4. Run `flutter pub get`.
 5. Start Android emulator (API 26+).
 6. Run `flutter run`.
