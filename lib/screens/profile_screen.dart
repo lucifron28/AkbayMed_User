@@ -187,7 +187,7 @@ class _ProfileContentState extends State<ProfileContent> {
                     radius: 50,
                     backgroundImage: _avatarUrl != null
                         ? NetworkImage(_avatarUrl!)
-                        : const NetworkImage('https://via.placeholder.com/150'),
+                        : const NetworkImage('assets/images/default_profile.png'),
                   ),
                   Positioned(
                     bottom: 0,
