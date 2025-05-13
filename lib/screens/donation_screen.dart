@@ -110,4 +110,159 @@ class _DonationScreenState extends State<DonationScreen> {
       }
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Donation'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.black54,
+            height: 1.0,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Donate Medicine',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+
+              // Medicine Name
+              TextFormField(
+                controller: _medicineNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Medicine Name',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.medication),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the medicine name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Quantity
+              TextFormField(
+                controller: _quantityController,
+                decoration: const InputDecoration(
+                  labelText: 'Quantity',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.numbers),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the quantity';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Please enter a valid quantity';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Expiration Date
+              TextFormField(
+                controller: _expirationDateController,
+                decoration: InputDecoration(
+                  labelText: 'Expiration Date',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.calendar_month),
+                    onPressed: _selectExpirationDate,
+                  ),
+                ),
+                readOnly: true,
+                onTap: _selectExpirationDate,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select an expiration date';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Description
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.description),
+                ),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please provide a description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // Submit Button
+              ElevatedButton(
+                onPressed: _isLoading ? null : _submitDonation,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                    : const Text(
+                  'Submit Donation',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
+
+              // Donation Guidelines
+              const Text(
+                'Donation Guidelines',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '• Medicines must not be expired\n'
+                    '• Please ensure medicines are in their original packaging\n'
+                    '• Include complete dosage information\n'
+                    '• All donations will be reviewed by our medical team\n'
+                    '• You will be contacted for pickup arrangements',
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
