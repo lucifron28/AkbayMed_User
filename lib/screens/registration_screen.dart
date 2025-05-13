@@ -22,19 +22,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _supabase = Supabase.instance.client;
 
   Future<void> _signUp() async {
-    // Validate inputs
     if (_passwordController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _nameController.text.isEmpty) {
       setState(() {
-        _errorMessage = "All fields are required";
+        _errorMessage = "All fields are required. Please fill in all the details.";
       });
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _errorMessage = "Passwords don't match";
+        _errorMessage = "Passwords do not match. Please ensure both passwords are identical.";
       });
       return;
     }
@@ -53,24 +52,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       );
 
       if (response.user != null) {
-        // Store additional user data in users table
-        await _supabase.from('users').insert({
+        // Use upsert instead of insert to handle existing records
+        await _supabase.from('users').upsert({
           'id': response.user!.id,
           'name': _nameController.text.trim(),
           'email': _emailController.text.trim(),
           'created_at': DateTime.now().toIso8601String(),
-        });
+        }, onConflict: 'id');
       }
 
       if (mounted) {
-        Navigator.pop(context); // Go back to login screen
+        Navigator.pop(context, "Successfully registered!");
       }
-    } catch (e) {
-      logger.e(e.toString());
+    } on AuthException catch (authError) {
+      logger.e("Authentication error: ${authError.message}");
       if (mounted) {
         setState(() {
-          _errorMessage = "Registration failed please try again";
-
+          _errorMessage = "Authentication failed: ${authError.message}. Please try again.";
+        });
+      }
+    } on PostgrestException catch (dbError) {
+      logger.e("Database error: ${dbError.message}");
+      if (mounted) {
+        setState(() {
+          _errorMessage = "A database error occurred: ${dbError.message}. Please contact support.";
+        });
+      }
+    } catch (e) {
+      logger.e("Unexpected error: $e");
+      if (mounted) {
+        setState(() {
+          _errorMessage = "An unexpected error occurred. Please try again later.";
         });
       }
     } finally {
