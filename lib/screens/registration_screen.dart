@@ -19,6 +19,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _nameController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   final _supabase = Supabase.instance.client;
 
   Future<void> _signUp() async {
@@ -129,7 +131,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
+                              color: Colors.black.withAlpha(25),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -207,6 +209,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           prefixIcon: const Icon(Icons.lock, color: Color(0xFF004D40)),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              color: const Color(0xFF004D40),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(color: Color(0xFF00796B), width: 2),
                             borderRadius: BorderRadius.circular(12),
@@ -214,7 +227,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                        obscureText: true,
+                        obscureText: !_isPasswordVisible,
                       ),
                       const SizedBox(height: 16),
                       TextField(
@@ -226,6 +239,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF004D40)),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              color: const Color(0xFF004D40),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                              });
+                            },
+                          ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(color: Color(0xFF00796B), width: 2),
                             borderRadius: BorderRadius.circular(12),
@@ -233,7 +257,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                        obscureText: true,
+                        obscureText: !_isConfirmPasswordVisible,
                       ),
                       if (_errorMessage != null)
                         Padding(
@@ -255,7 +279,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           elevation: 4,
-                          shadowColor: Colors.black.withValues(alpha: 0.2),
+                          shadowColor: Colors.black.withAlpha(50),
                         ),
                         child: _isLoading
                             ? const SizedBox(
