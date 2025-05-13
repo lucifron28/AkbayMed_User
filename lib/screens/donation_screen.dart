@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:logger/logger.dart';
 
-class DonationScreen extends StatelessWidget {
+class DonationScreen extends StatefulWidget {
   const DonationScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Donation'),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: Colors.black54,
-            height: 1.0,
-          ),
-        ),
-      ),
-      body: Center(
-        child: const Text('Donation Screen'),
-      ),
-    );
+  State<DonationScreen> createState() => _DonationScreenState();
+}
+
+class _DonationScreenState extends State<DonationScreen> {
+  final _supabase = Supabase.instance.client;
+  final _logger = Logger();
+  final _formKey = GlobalKey<FormState>();
+
+  final _medicineNameController = TextEditingController();
+  final _quantityController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _expirationDateController = TextEditingController();
+
+  bool _isLoading = false;
+  DateTime? _selectedExpirationDate;
+
+  @override
+  void dispose() {
+    _medicineNameController.dispose();
+    _quantityController.dispose();
+    _descriptionController.dispose();
+    _expirationDateController.dispose();
+    super.dispose();
   }
 }
