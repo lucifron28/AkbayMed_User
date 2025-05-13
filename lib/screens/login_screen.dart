@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isPasswordVisible = false;
   final _supabase = Supabase.instance.client;
 
   Future<void> _signIn() async {
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
+                        color: Colors.black.withAlpha(51),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -146,6 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     prefixIcon: const Icon(Icons.lock, color: Color(0xFF004D40)),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: const Color(0xFF004D40),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Color(0xFF00796B), width: 2),
                       borderRadius: BorderRadius.circular(12),
@@ -153,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     filled: true,
                     fillColor: Colors.white,
                   ),
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                 ),
                 if (_errorMessage != null)
                   Padding(
@@ -175,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 4,
-                    shadowColor: Colors.black.withValues(alpha: 0.2),
+                    shadowColor: Colors.black.withAlpha(51),
                   ),
                   child: _isLoading
                       ? const SizedBox(
@@ -223,3 +235,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
