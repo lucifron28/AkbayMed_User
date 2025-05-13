@@ -54,15 +54,30 @@ class MyAppState extends State<MyApp> {
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Donate'),
-            BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: 'Request'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          backgroundColor: const Color(0xFFE0F2F1), // Light teal background
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home, color: _selectedIndex == 0 ? const Color(0xFF00796B) : Colors.grey), // Teal for selected
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite, color: _selectedIndex == 1 ? const Color(0xFF00796B) : Colors.grey),
+              label: 'Donate',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.medical_services, color: _selectedIndex == 2 ? const Color(0xFF00796B) : Colors.grey),
+              label: 'Request',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person, color: _selectedIndex == 3 ? const Color(0xFF00796B) : Colors.grey),
+              label: 'Profile',
+            ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.blue,
+          selectedItemColor: const Color(0xFF00796B), // Teal for selected items
           unselectedItemColor: Colors.grey,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
           onTap: _onItemTapped,
         ),
       );
