@@ -129,15 +129,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegistrationScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const RegistrationScreen()),
                   );
+                  if (!mounted) return;
+                  if (result != null && result is String) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 },
-                child: const Text("Don't have an account? Register"),
+                child: const Text('Don\'t have an account? Register'),
               ),
             ],
           ),
