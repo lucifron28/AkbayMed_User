@@ -8,8 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 
-
-
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -19,10 +17,18 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: Color(0xFF004D40), // Dark teal
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color(0xFFE0F2F1), // Light teal
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Color(0xFF004D40)), // Dark teal
             tooltip: 'Logout',
             onPressed: () async {
               await _supabase.auth.signOut();
@@ -30,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
               if (context.mounted) {
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const MyApp()),
-                      (route) => false,
+                  (route) => false,
                 );
               }
             },
@@ -39,16 +45,24 @@ class ProfileScreen extends StatelessWidget {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
-            color: Colors.black54,
+            color: const Color(0xFFB2DFDB), // Teal border
             height: 1.0,
           ),
         ),
       ),
-      body: ProfileContent(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE0F2F1), Color(0xFFB2DFDB)], // Light teal gradient
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const ProfileContent(),
+      ),
     );
   }
 }
-
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -65,6 +79,7 @@ class _ProfileContentState extends State<ProfileContent> {
   String _name = 'Loading...';
   String _email = '';
   String? _avatarUrl;
+  bool _isVerified = false;
 
   @override
   void initState() {
@@ -76,7 +91,7 @@ class _ProfileContentState extends State<ProfileContent> {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        logger.e('User not logged in');
+        _logger.e('User not logged in');
         setState(() {
           _name = 'Not logged in';
           _isLoading = false;
@@ -86,7 +101,7 @@ class _ProfileContentState extends State<ProfileContent> {
 
       final data = await _supabase
           .from('users')
-          .select('name, email, avatar_url')
+          .select('name, email, avatar_url, is_verified')
           .eq('id', userId)
           .single();
 
@@ -94,6 +109,7 @@ class _ProfileContentState extends State<ProfileContent> {
         _name = data['name'] ?? 'No name found';
         _email = data['email'] ?? 'No email found';
         _avatarUrl = data['avatar_url'];
+        _isVerified = data['is_verified'] ?? false;
         _isLoading = false;
       });
     } catch (e) {
@@ -174,59 +190,86 @@ class _ProfileContentState extends State<ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _isLoading ? null : _uploadAvatar,
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _avatarUrl != null
-                        ? NetworkImage(_avatarUrl!)
-                        : const NetworkImage('assets/images/default_profile.png'),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: _isLoading ? null : _uploadAvatar,
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _avatarUrl != null
+                                ? NetworkImage(_avatarUrl!)
+                                : const AssetImage('assets/images/default_profile.png') as ImageProvider,
+                            backgroundColor: const Color(0xFFB2DFDB), // Teal background
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF00796B), // Teal
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                            ),
+                          ),
+                          if (_isUploading)
+                            Positioned.fill(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.black38,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(Icons.camera_alt, color: Colors.white, size: 18),
                     ),
-                  ),
-                  if (_isUploading)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black38,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        ),
+                    const SizedBox(height: 20),
+                    _isLoading
+                        ? const CircularProgressIndicator()
+                        : Text(
+                            _name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF004D40), // Dark teal
+                            ),
+                          ),
+                    const SizedBox(height: 10),
+                    Text(
+                      _email,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF004D40), // Dark teal
                       ),
                     ),
-                ],
+                    const SizedBox(height: 20),
+                    Text(
+                      _isVerified ? 'Verified' : 'Not Verified',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: _isVerified ? Colors.green : Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : Text(
-              _name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(_email),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
