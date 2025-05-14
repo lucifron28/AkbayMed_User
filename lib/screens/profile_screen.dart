@@ -13,8 +13,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _supabase = Supabase.instance.client;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -30,16 +28,48 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout, color: Color(0xFF004D40)), // Dark teal
             tooltip: 'Logout',
-            onPressed: () async {
-              await _supabase.auth.signOut();
+            onPressed: () {
+              showDialog(
+                barrierColor: Colors.black54,
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout?'),
+                  backgroundColor: const Color(0xFFC3EFED),
+                  actions: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: const Color(0xFF0D8E76), // Dark teal
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.red, // Dark teal
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () async {
+                        final _supabase = Supabase.instance.client;
 
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const MyApp()),
-                  (route) => false,
-                );
-              }
-            },
+                        await _supabase.auth.signOut();
+                        if (context.mounted) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              );
+            }
           ),
         ],
         bottom: PreferredSize(
