@@ -210,7 +210,9 @@ class _DonationScreenState extends State<DonationScreen> {
         'donor_id': donorId,
         'medication_id': medicationId,
         'quantity': int.parse(_quantityController.text.trim()),
-        'expiration_date': _selectedExpirationDate?.toIso8601String(),
+        'expiration_date': _selectedExpirationDate != null
+            ? "${_selectedExpirationDate!.year}-${_selectedExpirationDate!.month.toString().padLeft(2, '0')}-${_selectedExpirationDate!.day.toString().padLeft(2, '0')}"
+            : null,
       });
 
       if (mounted) {
