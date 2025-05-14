@@ -21,49 +21,14 @@ class _DonationScreenState extends State<DonationScreen> {
   final _expirationDateController = TextEditingController();
 
   bool _isLoading = false;
-  bool _isFetchingMedications = true;
   bool _isSearchingFDA = false;
   DateTime? _selectedExpirationDate;
-  List<Map<String, dynamic>> _medications = [];
   String? _selectedMedicationId;
   List<String> _fdaSuggestions = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchMedications();
-  }
-
-  Future<void> _fetchMedications() async {
-    try {
-      setState(() {
-        _isFetchingMedications = true;
-      });
-
-      final response = await _supabase
-          .from('medications')
-          .select('id, name')
-          .order('name');
-
-      setState(() {
-        _medications = List<Map<String, dynamic>>.from(response);
-        _isFetchingMedications = false;
-      });
-    } catch (e) {
-      _logger.e('Error fetching medications: $e');
-      setState(() {
-        _isFetchingMedications = false;
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to load medications: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
   }
 
   Future<void> _searchFDAMedications(String query) async {
@@ -130,10 +95,6 @@ class _DonationScreenState extends State<DonationScreen> {
       final newMedicationId = response['id'];
 
       setState(() {
-        if (!_medications.any((med) => med['id'] == newMedicationId)) {
-          _medications.add(response);
-          _medications.sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
-        }
         _selectedMedicationId = newMedicationId;
       });
 
@@ -424,7 +385,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                   border: Border.all(color: const Color(0xFFB2DFDB)),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                height: _fdaSuggestions.length * 40.0,
+                                height: _fdaSuggestions.length * 40.0 > 200 ? 200 : _fdaSuggestions.length * 40.0,
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: _fdaSuggestions.length,
@@ -445,51 +406,6 @@ class _DonationScreenState extends State<DonationScreen> {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-
-                        // Existing dropdown (now optional)
-                        if (_medications.isNotEmpty)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Or select from existing medications:',
-                                style: TextStyle(
-                                  color: Color(0xFF004D40),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              DropdownButtonFormField<String>(
-                                value: _selectedMedicationId,
-                                decoration: const InputDecoration(
-                                  labelText: 'Select Existing Medication',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.list, color: Color(0xFF00796B)),
-                                ),
-                                items: _medications.map((medication) {
-                                  return DropdownMenuItem<String>(
-                                    value: medication['id'],
-                                    child: Text(medication['name']),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedMedicationId = value;
-                                    // Auto-fill the name field if a medication is selected
-                                    if (value != null) {
-                                      final selected = _medications.firstWhere(
-                                            (med) => med['id'] == value,
-                                        orElse: () => {'name': ''},
-                                      );
-                                      _medicineNameController.text = selected['name'];
-                                    }
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-
                         const SizedBox(height: 16),
 
                         // Quantity
@@ -539,8 +455,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         // Submit Button
                         ElevatedButton(
                           onPressed: _isLoading ? null : () async {
-                            // If no existing medication selected but name is entered, add new one first
-                            if (_selectedMedicationId == null && _medicineNameController.text.isNotEmpty) {
+                            if (_medicineNameController.text.isNotEmpty) {
                               await _addNewMedication();
                             }
                             _submitDonation();
@@ -602,3 +517,4 @@ class _DonationScreenState extends State<DonationScreen> {
     );
   }
 }
+
