@@ -4,7 +4,7 @@ This document outlines the target features for the AkbayMed Flutter Android app,
 
 ## Core Features
 
-1. ~~**Login**~~ *(Completed)*
+1. ~~**Login**~~ **(Completed)**
     - **Description**: Allow users (donors and patients) to sign in with email and password to access the app.
     - **Status**: Implemented in `login_screen.dart` using `supabase.auth.signInWithPassword`.
     - **Details**:
@@ -12,7 +12,7 @@ This document outlines the target features for the AkbayMed Flutter Android app,
         - Validation: Non-empty email/password, error handling for invalid credentials.
         - Navigation: Redirects to main app (home screen) on successful login.
 
-2. ~~**User Registration & Account Verification**~~ *(Completed)*
+2. ~~**User Registration & Account Verification**~~ **(Completed)**
     - **Description**: Enable users to register as donors or patients with email, password, name, role, and ID upload; display verification status (mocked in Supabase).
     - **Status**: Implemented in `registration_screen.dart` using `supabase.auth.signUp` and `supabase_service.dart` for user insertion/ID upload.
     - **Details**:
@@ -21,7 +21,7 @@ This document outlines the target features for the AkbayMed Flutter Android app,
         - Validation: Valid email, password ≥8 characters, all fields filled.
         - Verification: Status shown in profile screen, mocked via Supabase dashboard updates.
 
-3. **Medication Donation Management** *(To Implement)*
+3. ~~**Medication Donation Management**~~ **(Completed)**
     - **Description**: Allow donors to submit medication donations (name, quantity, expiration date) and view donation history with status (pending/approved/rejected).
     - **Priority**: High (core feature per SRS Section 4.2).
     - **Requirements**:
@@ -61,7 +61,7 @@ This document outlines the target features for the AkbayMed Flutter Android app,
 
 ## Supporting Features
 
-5. **User Profile View** *(To Implement)*
+5. **User Profile View** *(In progress)*
     - **Description**: Display user information (name, role, verification status) and allow logout.
     - **Priority**: Medium (supports SRS Section 4.1 for verification status).
     - **Requirements**:
