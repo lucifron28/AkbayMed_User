@@ -207,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               context,
                               MaterialPageRoute(builder: (context) => const RegistrationScreen()),
                             );
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             if (result != null && result is String) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
