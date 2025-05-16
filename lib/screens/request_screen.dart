@@ -74,6 +74,22 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
+  Future<void> _requestMedication() async {
+    if (_medicineNameController.text.isEmpty || _quantityController.text.isEmpty) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+    final requestedMedication = {
+      'medicine_name': _medicineNameController.text,
+      'quantity': int.tryParse(_quantityController.text),
+    };
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
