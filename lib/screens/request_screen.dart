@@ -23,6 +23,18 @@ class _RequestScreenState extends State<RequestScreen> {
   String? _selectedMedicationId;
   List<String> _fdaSuggestions = [];
 
+  Future<String> fetchFDASuggestions(String query) async {
+    final url = Uri.parse('https://api.fda.gov/drug/label.json?search=$query');
+    final response = await get(url);
+
+    if (response.statusCode == 200) {
+      final data = response.body;
+      return data;
+    } else {
+      throw Exception('Failed to load FDA suggestions');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
