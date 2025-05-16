@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
@@ -23,15 +25,52 @@ class _RequestScreenState extends State<RequestScreen> {
   String? _selectedMedicationId;
   List<String> _fdaSuggestions = [];
 
-  Future<String> fetchFDASuggestions(String query) async {
-    final url = Uri.parse('https://api.fda.gov/drug/label.json?search=$query');
-    final response = await get(url);
+  Future<void> _searchFDAMedications(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _fdaSuggestions = [];
+      });
+      return;
+    }
 
-    if (response.statusCode == 200) {
-      final data = response.body;
-      return data;
-    } else {
-      throw Exception('Failed to load FDA suggestions');
+    setState(() {
+      _isSearchingFDA = true;
+    });
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.fda.gov/drug/label.json?search=openfda.generic_name:$query&limit=10'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['results'] != null) {
+          final results = List<dynamic>.from(data['results']);
+          final suggestions = <String>{};
+
+          for (var result in results) {
+            if (result['openfda'] != null &&
+                result['openfda']['generic_name'] != null) {
+              for (var name in result['openfda']['generic_name']) {
+                suggestions.add(name.toString());
+              }
+            }
+          }
+
+          setState(() {
+            _fdaSuggestions = suggestions.toList();
+          });
+        }
+      } else {
+        _logger.w('FDA API request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      _logger.e('Error searching FDA medications: $e');
+    } finally {
+      setState(() {
+        _isSearchingFDA = false;
+      });
     }
   }
 
