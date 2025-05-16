@@ -74,7 +74,7 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
-  Future<void> _requestMedication() async {
+  Future<void> _submitRequestedMedication() async {
     if (_medicineNameController.text.isEmpty || _quantityController.text.isEmpty) {
 
       ScaffoldMessenger.of(context).showSnackBar(
