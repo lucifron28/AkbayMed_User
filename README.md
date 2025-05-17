@@ -1,109 +1,272 @@
 # AkbayMed
 
-A Flutter Android app developed for a finals exam to facilitate medication donation and distribution in Philippine healthcare centers. The app uses Supabase for authentication and PostgreSQL database, and integrates with the openFDA API for medication information. It targets Android 8.0+ with a Material 3 UI following healthcare design principles.
+<div align="center">
+  <img src="assets/images/akbaymed-logo.png" alt="AkbayMed Logo" width="200"/>
+</div>
 
-## Core Features
+A Flutter-based Android application designed to facilitate medication donation and distribution in Philippine healthcare centers. The app connects donors with patients in need, ensuring safe and transparent medicine redistribution.
 
-1. ~~**Login**~~ **(Completed)**
-    - **Description**: Allow users (donors and patients) to sign in with email and password to access the app.
-    - **Status**: Implemented in `login_screen.dart` using `supabase.auth.signInWithPassword`.
-    - **Details**:
-        - UI: Form with email and password fields, login button, and link to registration screen.
-        - Validation: Non-empty email/password, error handling for invalid credentials.
-        - Navigation: Redirects to main app (home screen) on successful login.
-        - Design: Material 3 with healthcare-themed colors and accessible UI elements.
+## Screenshots
 
-2. ~~**User Registration & Account Verification**~~ **(Completed)**
-    - **Description**: Enable users to register as donors or patients with email, password, and name.
-    - **Status**: Implemented in `registration_screen.dart` using `supabase.auth.signUp` and direct Supabase database operations.
-    - **Details**:
-        - UI: Form with email, password, name, and submit button.
-        - Logic: Sign up and insert user data to `users` table.
-        - Validation: Valid email, password ≥8 characters, all fields filled.
-        - Design: Consistent Material 3 theming with the login screen.
+### Authentication
+![Login Screen](assets/screenshots/login_screen.png)
+![Registration Screen](assets/screenshots/registration_screen.png)
 
-3. ~~**Medication Donation Management**~~ **(Completed)**
-    - **Description**: Allow donors to submit medication donations (name, quantity, expiration date).
-    - **Status**: Implemented in `donation_screen.dart` with direct Supabase database operations and openFDA API integration.
-    - **Details**:
-        - UI: Form with medication name field (with FDA suggestions), quantity input, expiration date picker, and submit button.
-        - Logic: 
-            - Integrates with openFDA API to suggest generic medication names
-            - Creates new medication entries in the database
-            - Records donation details with proper validation
-        - Validation:
-            - Non-empty medication name
-            - Quantity > 0
-            - Valid expiration date selected
-        - Design: Responsive Material 3 UI with healthcare theming and user-friendly interactions.
+### Main Features
+![Home Screen](assets/screenshots/home_screen.png)
+![Donation Screen](assets/screenshots/donation_screen.png)
+![Request Screen](assets/screenshots/request_screen.png)
+![Profile Screen](assets/screenshots/profile_screen.png)
 
-4. **Patient Access and Medication Requests** *(In Progress)*
-    - **Description**: Enable patients to browse available medications and submit requests for specific quantities.
-    - **Status**: Started in `request_screen.dart` with openFDA API integration foundation.
-    - **Requirements**:
-        - UI: Medication browsing view and request form with feedback indicators.
-        - Logic: Fetch available medications and process requests with status tracking.
-        - Validation: Request quantities against available stock.
+### Additional Features
+![Medication Search](assets/screenshots/medication_search.png)
+![Donation Statistics](assets/screenshots/donation_history.png)
+![Request Status](assets/screenshots/request_status.png)
 
-## Supporting Features
+## Table of Contents
+- [AkbayMed](#akbaymed)
+  - [Screenshots](#screenshots)
+    - [Authentication](#authentication)
+    - [Main Features](#main-features)
+    - [Additional Features](#additional-features)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Core Features](#core-features)
+    - [Supporting Features](#supporting-features)
+  - [Tech Stack](#tech-stack)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+    - [Dependencies](#dependencies)
+  - [Installation](#installation)
+  - [Project Structure](#project-structure)
+  - [API Integration](#api-integration)
+    - [openFDA API](#openfda-api)
+    - [Supabase Integration](#supabase-integration)
+  - [Database Schema](#database-schema)
+    - [Users Table](#users-table)
+    - [Donations Table](#donations-table)
+    - [Requests Table](#requests-table)
+  - [UI/UX Design](#uiux-design)
+    - [Design System](#design-system)
+    - [Color Scheme](#color-scheme)
+  - [Development Setup](#development-setup)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
-5. ~~**User Profile View**~~ **(Completed)**
-    - **Description**: Display user information and allow logout.
-    - **Status**: Implemented in `profile_screen.dart` with direct Supabase integration.
-    - **Details**:
-        - UI: Displays user information and provides logout functionality.
-        - Logic: Fetches user data from Supabase and handles session management.
-        - Design: Consistent healthcare-themed Material 3 styling.
+## Features
 
-6. **Home Screen** *(To Implement)*
-    - **Description**: Provide a welcome screen with user stats and quick access to features.
-    - **Priority**: Low (enhances demo but not critical).
+### Core Features
 
-7. ~~**Navigation**~~ **(Completed)**
-    - **Description**: Bottom navigation bar to switch between screens.
-    - **Status**: Implemented in `app.dart` with Material 3 styling.
-    - **Details**:
-        - UI: Bottom navigation with Home, Donate, Request, and Profile tabs.
-        - Logic: Auth state detection and screen switching based on selected tab.
-        - Design: Themed icons and indicators following Material 3 guidelines.
+1. **Authentication System**
+   - Email and password-based authentication
+   - User registration
+   - Secure session management
+   - Profile management with avatar upload
 
-## Technical Implementation Details
+2. **Medication Donation Management**
+   - Donation submission with medication details
+   - Integration with openFDA API for medication verification
+   - Expiration date tracking
+   - Donation history and status tracking
 
-- **Authentication**: Implemented with Supabase Auth directly in UI components.
-- **Database**: Using Supabase PostgreSQL with the following schema:
-  ```sql
-  CREATE TABLE donations (
+3. **Medication Request System**
+   - Browse available medications
+   - Submit medication requests
+   - Track request status
+   - View request history
+
+4. **User Dashboard**
+   - Personalized home screen
+   - Activity tracking
+   - Appointment management
+   - Profile customization
+
+### Supporting Features
+- Material 3 design implementation
+- Responsive UI for various screen sizes
+- Image upload and management
+- Error handling and logging
+
+## Tech Stack
+
+### Frontend
+- **Framework**: Flutter 3.29.3
+- **Language**: Dart 3.7.2
+- **UI Components**: Material 3
+- **State Management**: Flutter's built-in StatefulWidget
+- **Navigation**: Flutter Navigator 2.0
+
+### Backend
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
+- **Storage**: Supabase Storage
+- **API Integration**: 
+  - openFDA API for medication information
+  - RESTful API architecture
+
+### Dependencies
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.9.0
+  flutter_dotenv: ^5.2.1
+  logger: ^2.5.0
+  image_picker: ^1.0.4
+  path: ^1.8.3
+  permission_handler: ^11.0.0
+  http: ^1.4.0
+  intl: ^0.19.0
+```
+
+## Installation
+
+1. **Prerequisites**
+   - Flutter SDK 3.x
+   - Android Studio / VS Code
+   - Android SDK (API level 26+)
+   - Git
+
+2. **Setup Steps**
+   ```bash
+   # Clone the repository
+   git clone https://github.com/lucifron28/AkbayMed_User.git
+   cd AkbayMed_User
+
+   # Install dependencies
+   flutter pub get
+
+   # Create .env file
+   cp .env.example .env
+   ```
+
+3. **Environment Configuration**
+   Create a `.env` file in the root directory with:
+   ```
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Run the App**
+   ```bash
+   flutter run
+   ```
+
+## Project Structure
+
+```
+lib/
+├── main.dart           # Application entry point
+├── app.dart            # Main app configuration
+└── screens/           # UI screens
+    ├── home_screen.dart
+    ├── login_screen.dart
+    ├── registration_screen.dart
+    ├── donation_screen.dart
+    ├── request_screen.dart
+    └── profile_screen.dart
+```
+
+## API Integration
+
+### openFDA API
+- Endpoint: `https://api.fda.gov/drug/label.json`
+- Used for medication verification and information
+- Implements rate limiting and error handling
+
+### Supabase Integration
+- Authentication
+- Real-time database
+- File storage
+- Row Level Security (RLS) policies
+
+## Database Schema
+
+### Users Table
+```sql
+CREATE TABLE users (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    avatar_url TEXT,
+    is_verified BOOLEAN DEFAULT false,
+    donation_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Donations Table
+```sql
+CREATE TABLE donations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     donor_id UUID REFERENCES auth.users(id),
     medication_id UUID REFERENCES medications(id),
     quantity INTEGER NOT NULL,
     expiration_date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    status VARCHAR(20) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT NOW()
-  );
-  ```
-- **API Integration**: Using openFDA API for medication information instead of maintaining a separate medication database.
-  - Implementation in `donation_screen.dart` allows searching and suggesting generic medication names.
-  - Example endpoint: `https://api.fda.gov/drug/label.json?search=openfda.generic_name:{query}`
+);
+```
 
-## UI/UX
+### Requests Table
+```sql
+CREATE TABLE requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    patient_id UUID REFERENCES auth.users(id),
+    medication_id UUID REFERENCES medications(id),
+    quantity INTEGER NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
 
-- **Design System**: Material 3 with a healthcare-focused color palette (teals and whites)
-- **Responsive**: All screens adapt to different device sizes and orientations
-- **Accessibility**: High contrast elements and clear labels for better usability
+## UI/UX Design
 
-## Next Steps
+### Design System
+- Material 3 components
+- Healthcare-focused color palette
+- Accessible design elements
+- Responsive layouts
 
-1. Complete the medication request functionality in `request_screen.dart`
-2. Implement medication browsing for patients
-3. Add medication request history view
-4. Build the home screen with user statistics
-5. Enhance error handling and offline support
-6. Add comprehensive user guides and tooltips
+### Color Scheme
+- Primary: `#00796B` (Teal)
+- Secondary: `#004D40` (Dark Teal)
+- Background: `#E0F2F1` (Light Teal)
+- Accent: `#B2DFDB` (Pale Teal)
 
-## Development Environment
+## Development Setup
 
-- Flutter 3.x
+1. **IDE Configuration**
+   - Install Flutter and Dart plugins
+   - Configure Android SDK
+   - Set up Flutter SDK path
+
+2. **Code Style**
+   - Follow Flutter style guide
+   - Use Flutter lints
+   - Implement proper error handling
+
+3. **Testing**
+   - Unit tests
+   - Widget tests
+   - Integration tests
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Flutter team for the amazing framework
 - Supabase for backend services
-- Android API 26+ (Android 8.0+)
-- openFDA API for medication data
+- openFDA for medication data
+- All contributors and supporters
