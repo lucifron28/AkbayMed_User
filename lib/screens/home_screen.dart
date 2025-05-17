@@ -189,6 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          'assets/images/akbaymed-logo.png',
+          fit: BoxFit.fitWidth,
+        ),
         title: const Text(
           'Home',
           style: TextStyle(
@@ -196,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: const Color(0xFFE0F2F1),
         elevation: 0,
         actions: [
