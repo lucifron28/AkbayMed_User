@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'dart:ui';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -98,47 +99,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Format date
     final appointmentDate = DateTime.parse(appointment['appointment_date']);
-    final formattedDate = DateFormat('MMM dd, yyyy - h:mm a').format(appointmentDate);
+    final formattedDate = DateFormat('MMM dd, yyyy - h:mm a').format(
+        appointmentDate);
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: const Color(0xFFE0F2F1),
-        title: Text(
-          isDropOff ? 'Medication Drop-off' : 'Medication Pick-up',
-          style: const TextStyle(
-            color: Color(0xFF004D40),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _detailRow('Medication:', medicationName),
-            const SizedBox(height: 8),
-            _detailRow('Quantity:', quantity),
-            const SizedBox(height: 8),
-            _detailRow('Status:', status, getStatusColor(status)),
-            const SizedBox(height: 8),
-            _detailRow('Date:', formattedDate),
-            const SizedBox(height: 8),
-            _detailRow('Type:', isDropOff ? 'Drop-off' : 'Pick-up'),
-            const SizedBox(height: 8),
-            _detailRow('ID:', isDropOff ? details['id'] ?? 'N/A' : details['id'] ?? 'N/A'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF00796B),
+      builder: (context) =>
+          AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16)),
+            backgroundColor: const Color(0xFFE0F2F1),
+            title: Text(
+              isDropOff ? 'Medication Drop-off' : 'Medication Pick-up',
+              style: const TextStyle(
+                color: Color(0xFF004D40),
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _detailRow('Medication:', medicationName),
+                const SizedBox(height: 8),
+                _detailRow('Quantity:', quantity),
+                const SizedBox(height: 8),
+                _detailRow('Status:', status, getStatusColor(status)),
+                const SizedBox(height: 8),
+                _detailRow('Date:', formattedDate),
+                const SizedBox(height: 8),
+                _detailRow('Type:', isDropOff ? 'Drop-off' : 'Pick-up'),
+                const SizedBox(height: 8),
+                _detailRow('ID:',
+                    isDropOff ? details['id'] ?? 'N/A' : details['id'] ??
+                        'N/A'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF00796B),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -304,149 +310,147 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildAppointmentsTable() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 16.0),
-      child: Container(
-        alignment: Alignment.topCenter,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.7),
-          // Fixed: withValues → withOpacity
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              // Fixed: withValues → withOpacity
-              blurRadius: 10,
-              spreadRadius: 0,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(4),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                dividerColor: const Color(0xFFB2DFDB),
-                dataTableTheme: DataTableThemeData(
-                  headingTextStyle: const TextStyle(
-                    color: Color(0xFF004D40),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  dataTextStyle: const TextStyle(
-                    color: Color(0xFF00695C),
-                    fontSize: 13,
-                  ),
-                  headingRowHeight: 48,
-                  dataRowMinHeight: 56,
-                  dividerThickness: 1,
-                ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.teal.withValues(alpha: 0.3),
+                width: 1.5,
               ),
-              child: DataTable(
-                columnSpacing: 16,
-                dataRowMaxHeight: double.infinity,
-                columns: const [
-                  DataColumn(label: Text('Type')),
-                  DataColumn(label: Text('Date')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Action')),
-                ],
-                rows: List<DataRow>.generate(
-                  _appointments.length,
-                      (index) {
-                    final appointment = _appointments[index];
-
-                    // Determine appointment type (drop-off or pick-up)
-                    final isDropOff = appointment['donation_id'] != null;
-
-                    // Get status data from the appropriate table
-                    Map<String, dynamic>? details = isDropOff
-                        ? appointment['donations']
-                        : appointment['requests'];
-
-                    final status = details?['status'] ?? 'N/A';
-
-                    // Format appointment date
-                    String formattedDate = 'N/A';
-                    if (appointment['appointment_date'] != null) {
-                      try {
-                        final appointmentDate = DateTime.parse(
-                            appointment['appointment_date']);
-                        formattedDate = DateFormat('MMM dd\nyyyy').format(
-                            appointmentDate);
-                      } catch (e) {
-                        _logger.e('Error parsing date: $e');
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 24,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(4),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: const Color(0xFFB2DFDB),
+                  dataTableTheme: DataTableThemeData(
+                    headingTextStyle: const TextStyle(
+                      color: Color(0xFF004D40),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    dataTextStyle: const TextStyle(
+                      color: Color(0xFF00695C),
+                      fontSize: 13,
+                    ),
+                    headingRowHeight: 48,
+                    dataRowMinHeight: 56,
+                    dividerThickness: 1,
+                  ),
+                ),
+                child: DataTable(
+                  columnSpacing: 16,
+                  dataRowMaxHeight: double.infinity,
+                  columns: const [
+                    DataColumn(label: Text('Type')),
+                    DataColumn(label: Text('Date')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Action')),
+                  ],
+                  rows: List<DataRow>.generate(
+                    _appointments.length,
+                        (index) {
+                      final appointment = _appointments[index];
+                      final isDropOff = appointment['donation_id'] != null;
+                      Map<String, dynamic>? details = isDropOff
+                          ? appointment['donations']
+                          : appointment['requests'];
+                      final status = details?['status'] ?? 'N/A';
+                      String formattedDate = 'N/A';
+                      if (appointment['appointment_date'] != null) {
+                        try {
+                          final appointmentDate = DateTime.parse(
+                              appointment['appointment_date']);
+                          formattedDate = DateFormat('MMM dd\nyyyy').format(
+                              appointmentDate);
+                        } catch (e) {
+                          _logger.e('Error parsing date: $e');
+                        }
                       }
-                    }
-
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                isDropOff ? Icons.upload : Icons.download,
-                                color: isDropOff
-                                    ? const Color(0xFF00796B)
-                                    : const Color(0xFF0097A7),
-                                size: 18,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                isDropOff ? 'Drop-off' : 'Pick-up',
-                                style: TextStyle(
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isDropOff ? Icons.upload : Icons.download,
                                   color: isDropOff
                                       ? const Color(0xFF00796B)
                                       : const Color(0xFF0097A7),
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  isDropOff ? 'Drop-off' : 'Pick-up',
+                                  style: TextStyle(
+                                    color: isDropOff
+                                        ? const Color(0xFF00796B)
+                                        : const Color(0xFF0097A7),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          DataCell(
+                            Text(
+                              formattedDate,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          DataCell(
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: getStatusColor(status).withValues(
+                                    alpha: 0.1),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: getStatusColor(status).withValues(
+                                      alpha: 0.5),
+                                ),
+                              ),
+                              child: Text(
+                                status.toUpperCase(),
+                                style: TextStyle(
+                                  color: getStatusColor(status),
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Text(
-                            formattedDate,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        DataCell(
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: getStatusColor(status).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: getStatusColor(status).withValues(
-                                    alpha: 0.5),
+                          DataCell(
+                            IconButton(
+                              icon: const Icon(
+                                Icons.info_outline,
+                                color: Color(0xFF00796B),
                               ),
-                            ),
-                            child: Text(
-                              status.toUpperCase(),
-                              style: TextStyle(
-                                color: getStatusColor(status),
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              onPressed: () =>
+                                  _showAppointmentDetails(appointment),
+                              tooltip: 'View Details',
                             ),
                           ),
-                        ),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(
-                              Icons.info_outline,
-                              color: Color(0xFF00796B),
-                            ),
-                            onPressed: () =>
-                                _showAppointmentDetails(appointment),
-                            tooltip: 'View Details',
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
