@@ -255,6 +255,10 @@ class _DonationScreenState extends State<DonationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          'assets/images/akbaymed-logo.png',
+          fit: BoxFit.fitWidth,
+        ),
         title: const Text(
           'Donation',
           style: TextStyle(
@@ -262,6 +266,7 @@ class _DonationScreenState extends State<DonationScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: const Color(0xFFE0F2F1), // Light teal
         elevation: 0,
         bottom: PreferredSize(
