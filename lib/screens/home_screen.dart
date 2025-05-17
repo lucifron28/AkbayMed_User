@@ -295,6 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
   Widget _buildAppointmentsTable() {
     return Container(
+      alignment: Alignment.topCenter,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
