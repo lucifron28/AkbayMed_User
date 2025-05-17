@@ -68,6 +68,15 @@ flutter:
     - .env
     - assets/images/default_profile.png
     - assets/images/akbaymed-logo.png
+    - assets/screenshots/donation-screen.jpg
+    - assets/screenshots/home-screen.jpg
+    - assets/screenshots/login-screen.jpg
+    - assets/screenshots/logout.jpg
+    - assets/screenshots/profile-screen.jpg
+    - assets/screenshots/registration-screen.jpg
+    - assets/screenshots/request-screen.jpg
+    - assets/screenshots/search-suggestions.jpg
+    - assets/screenshots/update-profile-feature.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
