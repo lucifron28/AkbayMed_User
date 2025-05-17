@@ -1,4 +1,6 @@
-<div align="center">
+# AkbayMed
+
+<div id="logo" align="center">
   <img src="assets/images/akbaymed-logo.png" alt="AkbayMed Logo" width="600"/>
 </div>
 
@@ -22,34 +24,35 @@ A Flutter-based Android application designed to facilitate medication donation a
 ![Request Status](assets/screenshots/request_status.png)
 
 ## Table of Contents
-- [Screenshots](#screenshots)
-  - [Authentication](#authentication)
-  - [Main Features](#main-features)
-  - [Additional Features](#additional-features)
-- [Table of Contents](#table-of-contents)
-- [Features](#features)
-  - [Core Features](#core-features)
-  - [Supporting Features](#supporting-features)
-- [Tech Stack](#tech-stack)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [Dependencies](#dependencies)
-- [Installation](#installation)
-- [Project Structure](#project-structure)
-- [API Integration](#api-integration)
-  - [openFDA API](#openfda-api)
-  - [Supabase Integration](#supabase-integration)
-- [Database Schema](#database-schema)
-  - [Users Table](#users-table)
-  - [Donations Table](#donations-table)
-  - [Requests Table](#requests-table)
-- [UI/UX Design](#uiux-design)
-  - [Design System](#design-system)
-  - [Color Scheme](#color-scheme)
-- [Development Setup](#development-setup)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+- [AkbayMed](#akbaymed)
+  - [Screenshots](#screenshots)
+    - [Authentication](#authentication)
+    - [Main Features](#main-features)
+    - [Additional Features](#additional-features)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Core Features](#core-features)
+    - [Supporting Features](#supporting-features)
+  - [Tech Stack](#tech-stack)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+    - [Dependencies](#dependencies)
+  - [Installation](#installation)
+  - [Project Structure](#project-structure)
+  - [API Integration](#api-integration)
+    - [openFDA API](#openfda-api)
+    - [Supabase Integration](#supabase-integration)
+  - [Database Schema](#database-schema)
+    - [Users Table](#users-table)
+    - [Donations Table](#donations-table)
+    - [Requests Table](#requests-table)
+  - [UI/UX Design](#uiux-design)
+    - [Design System](#design-system)
+    - [Color Scheme](#color-scheme)
+  - [Development Setup](#development-setup)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
 ## Features
 
