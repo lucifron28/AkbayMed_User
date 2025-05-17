@@ -13,27 +13,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _supabase = Supabase.instance.client;
   final _logger = Logger();
-  
+
   List<Map<String, dynamic>> _appointments = [];
   bool _isLoading = true;
-  
+
   @override
   void initState() {
     super.initState();
     _fetchAppointments();
   }
-  
+
   Future<void> _fetchAppointments() async {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
         throw Exception('User not logged in');
       }
-      
+
       // Fetch user's appointments with related donation and request information
       final appointmentsData = await _supabase
           .from('appointments')
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ''')
           .eq('user_id', userId)
           .order('appointment_date', ascending: false);
-      
+
       setState(() {
         _appointments = List<Map<String, dynamic>>.from(appointmentsData);
         _isLoading = false;
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _isLoading = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -71,11 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showAppointmentDetails(Map<String, dynamic> appointment) {
-    // Determine if it's a donation or request
-    bool isDonation = appointment['type'] == 'drop-off';
-    
+    // Determine if it's a drop-off or pick-up
+    // bool isDropOff = appointment['type'] == 'drop-off';
+    bool isDropOff = appointment['donation_id'] != null;
     // Extract the relevant information based on type
-    Map<String, dynamic>? details = isDonation 
+    Map<String, dynamic>? details = isDropOff
         ? appointment['donations']
         : appointment['requests'];
 
@@ -95,18 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final medicationName = medication != null ? medication['name'] : 'N/A';
     final quantity = details['quantity']?.toString() ?? 'N/A';
     final status = details['status'] ?? 'N/A';
-    
+
     // Format date
     final appointmentDate = DateTime.parse(appointment['appointment_date']);
     final formattedDate = DateFormat('MMM dd, yyyy - h:mm a').format(appointmentDate);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: const Color(0xFFE0F2F1),
         title: Text(
-          isDonation ? 'Medication Donation' : 'Medication Request',
+          isDropOff ? 'Medication Drop-off' : 'Medication Pick-up',
           style: const TextStyle(
             color: Color(0xFF004D40),
             fontWeight: FontWeight.bold,
@@ -124,7 +124,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             _detailRow('Date:', formattedDate),
             const SizedBox(height: 8),
-            _detailRow('Type:', isDonation ? 'Drop-off' : 'Pick-up'),
+            _detailRow('Type:', isDropOff ? 'Drop-off' : 'Pick-up'),
+            const SizedBox(height: 8),
+            _detailRow('ID:', isDropOff ? details['id'] ?? 'N/A' : details['id'] ?? 'N/A'),
           ],
         ),
         actions: [
@@ -139,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _detailRow(String label, String value, [Color? valueColor]) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-  
+
   Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
@@ -206,8 +208,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFFE0F2F1), Color(0xFFB2DFDB)],
@@ -230,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              
+
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
@@ -241,50 +249,50 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               Expanded(
                 child: _isLoading
                     ? const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF00796B),
-                        ),
-                      )
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF00796B),
+                  ),
+                )
                     : _appointments.isEmpty
-                        ? const Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 64,
-                                  color: Color(0xFF80CBC4),
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  'No appointments yet',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(0xFF004D40),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Your donation and request appointments will appear here',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFF00695C),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: _buildAppointmentsTable(),
-                          ),
+                    ? const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 64,
+                        color: Color(0xFF80CBC4),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'No appointments yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xFF004D40),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Your donation and request appointments will appear here',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF00695C),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                    : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildAppointmentsTable(),
+                ),
               ),
             ],
           ),
@@ -292,18 +300,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
+
   Widget _buildAppointmentsTable() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 16.0),
       child: Container(
         alignment: Alignment.topCenter,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.7),
+          color: Colors.white.withOpacity(0.7),
+          // Fixed: withValues → withOpacity
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(0.05),
+              // Fixed: withValues → withOpacity
               blurRadius: 10,
               spreadRadius: 0,
               offset: const Offset(0, 4),
@@ -343,15 +353,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
                 rows: List<DataRow>.generate(
                   _appointments.length,
-                  (index) {
+                      (index) {
                     final appointment = _appointments[index];
 
-                    // Determine appointment type and status
+                    // Determine appointment type (drop-off or pick-up)
                     final type = appointment['type'] ?? '';
-                    final isDonation = type == 'drop-off';
+                    final isDropOff = appointment['donation_id'] != null;
 
-                    // Safely get status data
-                    Map<String, dynamic>? details = isDonation
+                    // Get status data from the appropriate table
+                    Map<String, dynamic>? details = isDropOff
                         ? appointment['donations']
                         : appointment['requests'];
 
@@ -361,8 +371,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     String formattedDate = 'N/A';
                     if (appointment['appointment_date'] != null) {
                       try {
-                        final appointmentDate = DateTime.parse(appointment['appointment_date']);
-                        formattedDate = DateFormat('MMM dd\nyyyy').format(appointmentDate);
+                        final appointmentDate = DateTime.parse(
+                            appointment['appointment_date']);
+                        formattedDate = DateFormat('MMM dd\nyyyy').format(
+                            appointmentDate);
                       } catch (e) {
                         _logger.e('Error parsing date: $e');
                       }
@@ -375,15 +387,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                isDonation ? Icons.upload : Icons.download,
-                                color: isDonation ? const Color(0xFF00796B) : const Color(0xFF0097A7),
+                                isDropOff ? Icons.upload : Icons.download,
+                                color: isDropOff
+                                    ? const Color(0xFF00796B)
+                                    : const Color(0xFF0097A7),
                                 size: 18,
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                isDonation ? 'Drop-off' : 'Pick-up',
+                                isDropOff ? 'Drop-off' : 'Pick-up',
                                 style: TextStyle(
-                                  color: isDonation ? const Color(0xFF00796B) : const Color(0xFF0097A7),
+                                  color: isDropOff
+                                      ? const Color(0xFF00796B)
+                                      : const Color(0xFF0097A7),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -398,12 +414,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         DataCell(
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: getStatusColor(status).withValues(alpha: 0.1),
+                              color: getStatusColor(status).withOpacity(0.1),
+                              // Fixed: withValues → withOpacity
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: getStatusColor(status).withValues(alpha: 0.5),
+                                color: getStatusColor(status).withOpacity(
+                                    0.5), // Fixed: withValues → withOpacity
                               ),
                             ),
                             child: Text(
@@ -422,7 +441,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Icons.info_outline,
                               color: Color(0xFF00796B),
                             ),
-                            onPressed: () => _showAppointmentDetails(appointment),
+                            onPressed: () =>
+                                _showAppointmentDetails(appointment),
                             tooltip: 'View Details',
                           ),
                         ),
