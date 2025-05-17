@@ -294,139 +294,142 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   Widget _buildAppointmentsTable() {
-    return Container(
-      alignment: Alignment.topCenter,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            spreadRadius: 0,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(4),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              dividerColor: const Color(0xFFB2DFDB),
-              dataTableTheme: DataTableThemeData(
-                headingTextStyle: const TextStyle(
-                  color: Color(0xFF004D40),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-                dataTextStyle: const TextStyle(
-                  color: Color(0xFF00695C),
-                  fontSize: 13,
-                ),
-                headingRowHeight: 48,
-                dataRowMinHeight: 56,
-                dividerThickness: 1,
-              ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 16.0),
+      child: Container(
+        alignment: Alignment.topCenter,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              spreadRadius: 0,
+              offset: const Offset(0, 4),
             ),
-            child: DataTable(
-              columnSpacing: 16,
-              dataRowMaxHeight: double.infinity,
-              columns: const [
-                DataColumn(label: Text('Type')),
-                DataColumn(label: Text('Date')),
-                DataColumn(label: Text('Status')),
-                DataColumn(label: Text('Action')),
-              ],
-              rows: List<DataRow>.generate(
-                _appointments.length,
-                (index) {
-                  final appointment = _appointments[index];
-                  
-                  // Determine appointment type and status
-                  final type = appointment['type'] ?? '';
-                  final isDonation = type == 'drop-off';
-                  
-                  // Safely get status data
-                  Map<String, dynamic>? details = isDonation 
-                      ? appointment['donations'] 
-                      : appointment['requests'];
-                  
-                  final status = details?['status'] ?? 'N/A';
-                  
-                  // Format appointment date
-                  String formattedDate = 'N/A';
-                  if (appointment['appointment_date'] != null) {
-                    try {
-                      final appointmentDate = DateTime.parse(appointment['appointment_date']);
-                      formattedDate = DateFormat('MMM dd\nyyyy').format(appointmentDate);
-                    } catch (e) {
-                      _logger.e('Error parsing date: $e');
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(4),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: const Color(0xFFB2DFDB),
+                dataTableTheme: DataTableThemeData(
+                  headingTextStyle: const TextStyle(
+                    color: Color(0xFF004D40),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  dataTextStyle: const TextStyle(
+                    color: Color(0xFF00695C),
+                    fontSize: 13,
+                  ),
+                  headingRowHeight: 48,
+                  dataRowMinHeight: 56,
+                  dividerThickness: 1,
+                ),
+              ),
+              child: DataTable(
+                columnSpacing: 16,
+                dataRowMaxHeight: double.infinity,
+                columns: const [
+                  DataColumn(label: Text('Type')),
+                  DataColumn(label: Text('Date')),
+                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Action')),
+                ],
+                rows: List<DataRow>.generate(
+                  _appointments.length,
+                  (index) {
+                    final appointment = _appointments[index];
+
+                    // Determine appointment type and status
+                    final type = appointment['type'] ?? '';
+                    final isDonation = type == 'drop-off';
+
+                    // Safely get status data
+                    Map<String, dynamic>? details = isDonation
+                        ? appointment['donations']
+                        : appointment['requests'];
+
+                    final status = details?['status'] ?? 'N/A';
+
+                    // Format appointment date
+                    String formattedDate = 'N/A';
+                    if (appointment['appointment_date'] != null) {
+                      try {
+                        final appointmentDate = DateTime.parse(appointment['appointment_date']);
+                        formattedDate = DateFormat('MMM dd\nyyyy').format(appointmentDate);
+                      } catch (e) {
+                        _logger.e('Error parsing date: $e');
+                      }
                     }
-                  }
-                  
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              isDonation ? Icons.upload : Icons.download,
-                              color: isDonation ? const Color(0xFF00796B) : const Color(0xFF0097A7),
-                              size: 18,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              isDonation ? 'Drop-off' : 'Pick-up',
-                              style: TextStyle(
+
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isDonation ? Icons.upload : Icons.download,
                                 color: isDonation ? const Color(0xFF00796B) : const Color(0xFF0097A7),
+                                size: 18,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                isDonation ? 'Drop-off' : 'Pick-up',
+                                style: TextStyle(
+                                  color: isDonation ? const Color(0xFF00796B) : const Color(0xFF0097A7),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            formattedDate,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        DataCell(
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: getStatusColor(status).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: getStatusColor(status).withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: Text(
+                              status.toUpperCase(),
+                              style: TextStyle(
+                                color: getStatusColor(status),
+                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                      DataCell(
-                        Text(
-                          formattedDate,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                      ),
-                      DataCell(
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: getStatusColor(status).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: getStatusColor(status).withValues(alpha: 0.5),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(
+                              Icons.info_outline,
+                              color: Color(0xFF00796B),
                             ),
-                          ),
-                          child: Text(
-                            status.toUpperCase(),
-                            style: TextStyle(
-                              color: getStatusColor(status),
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            onPressed: () => _showAppointmentDetails(appointment),
+                            tooltip: 'View Details',
                           ),
                         ),
-                      ),
-                      DataCell(
-                        IconButton(
-                          icon: const Icon(
-                            Icons.info_outline,
-                            color: Color(0xFF00796B),
-                          ),
-                          onPressed: () => _showAppointmentDetails(appointment),
-                          tooltip: 'View Details',
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),
