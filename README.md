@@ -50,8 +50,6 @@ A Flutter-based Android application designed to facilitate medication donation a
     - [Color Scheme](#color-scheme)
   - [Development Setup](#development-setup)
   - [Contributing](#contributing)
-  - [License](#license)
-  - [Acknowledgments](#acknowledgments)
 
 ## Features
 
@@ -600,14 +598,3 @@ $$ LANGUAGE plpgsql;
 3. Commit your changes
 4. Push to the branch
 5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Flutter team for the amazing framework
-- Supabase for backend services
-- openFDA for medication data
-- All contributors and supporters
