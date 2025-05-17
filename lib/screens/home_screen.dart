@@ -75,12 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // Determine if it's a drop-off or pick-up
     // bool isDropOff = appointment['type'] == 'drop-off';
     bool isDropOff = appointment['donation_id'] != null;
-    // Extract the relevant information based on type
     Map<String, dynamic>? details = isDropOff
         ? appointment['donations']
         : appointment['requests'];
 
-    // Handle possibly null data
     if (details == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -136,9 +134,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF00796B),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Close'),
@@ -229,9 +229,10 @@ class _HomeScreenState extends State<HomeScreen> {
             .width,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFE0F2F1), Color(0xFFB2DFDB)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xffb0dab9), Color(0xffdad299)],
+            stops: [0, 1],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
