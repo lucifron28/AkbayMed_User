@@ -80,30 +80,29 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.white.withOpacity(0.6),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withAlpha(51),
+                                color: Colors.black.withOpacity(0.1),
                                 blurRadius: 10,
+                                spreadRadius: 1,
                                 offset: const Offset(0, 4),
                               ),
                             ],
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.8),
+                              width: 1.5,
+                            ),
                           ),
                           padding: const EdgeInsets.all(16),
                           child: Column(
                             children: [
-                              const Text(
-                                'Welcome to AkbayMed',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF00796B), // Teal
-                                  fontFamily: 'Roboto',
-                                ),
-                                textAlign: TextAlign.center,
+                              Image.asset(
+                                'assets/images/akbaymed-logo.png',
+                                width: 250,
+                                height: 250,
                               ),
-                              const SizedBox(height: 8),
                               const Text(
                                 'A Safe, Transparent Medicine\n Redistribution App',
                                 style: TextStyle(
@@ -236,4 +235,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
