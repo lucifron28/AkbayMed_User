@@ -6,33 +6,15 @@
 
 A Flutter-based Android application designed to facilitate medication donation and distribution in Philippine healthcare centers. The app connects donors with patients in need, ensuring safe and transparent medicine redistribution.
 
-## Screenshots
-
-### Authentication
-![Login Screen](assets/screenshots/login-screen.jpg)
-![Registration Screen](assets/screenshots/registration-screen.jpg)
-
-### Main Features
-![Home Screen](assets/screenshots/home-screen.jpg)
-![Donation Screen](assets/screenshots/donation-screen.jpg)
-![Request Screen](assets/screenshots/request-screen.jpg)
-![Profile Screen](assets/screenshots/profile-screen.jpg)
-
-### Additional Features
-![Medication Search](assets/screenshots/search-suggestions.jpg)
-![Donation Statistics](assets/screenshots/profile-screen.jpg)
-![Update Profile](assets/screenshots/update-profile-feature.jpg)
-
 ## Table of Contents
 - [AkbayMed](#akbaymed)
-  - [Screenshots](#screenshots)
-    - [Authentication](#authentication)
-    - [Main Features](#main-features)
-    - [Additional Features](#additional-features)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
-    - [Core Features](#core-features)
-    - [Supporting Features](#supporting-features)
+    - [Authentication](#authentication)
+    - [Medication Donation](#medication-donation)
+    - [Medication Requests](#medication-requests)
+    - [User Profile](#user-profile)
+    - [Home Dashboard](#home-dashboard)
   - [Tech Stack](#tech-stack)
     - [Frontend](#frontend)
     - [Backend](#backend)
@@ -56,37 +38,68 @@ A Flutter-based Android application designed to facilitate medication donation a
 
 ## Features
 
-### Core Features
+### Authentication
+Secure and user-friendly authentication system for both donors and patients.
 
-1. **Authentication System**
-   - Email and password-based authentication
-   - User registration
-   - Secure session management
-   - Profile management with avatar upload
+<div align="center">
+  <img src="assets/screenshots/login-screen.jpg" alt="Login Screen" width="300"/>
+  <img src="assets/screenshots/registration-screen.jpg" alt="Registration Screen" width="300"/>
+</div>
 
-2. **Medication Donation Management**
-   - Donation submission with medication details
-   - Integration with openFDA API for medication verification
-   - Expiration date tracking
-   - Donation history and status tracking
+- Email and password-based authentication
+- User registration with role selection
+- Secure session management
+- Profile management with avatar upload
 
-3. **Medication Request System**
-   - Browse available medications
-   - Submit medication requests
-   - Track request status
-   - View request history
+### Medication Donation
+Streamlined process for donors to contribute medications to those in need.
 
-4. **User Dashboard**
-   - Personalized home screen
-   - Activity tracking
-   - Appointment management
-   - Profile customization
+<div align="center">
+  <img src="assets/screenshots/donation-screen.jpg" alt="Donation Screen" width="300"/>
+  <img src="assets/screenshots/search-suggestions.jpg" alt="Medication Search" width="300"/>
+</div>
 
-### Supporting Features
-- Material 3 design implementation
-- Responsive UI for various screen sizes
-- Image upload and management
-- Error handling and logging
+- Donation submission with medication details
+- Integration with openFDA API for medication verification
+- Expiration date tracking
+- Donation history and status tracking
+
+### Medication Requests
+Easy-to-use interface for patients to request needed medications.
+
+<div align="center">
+  <img src="assets/screenshots/request-screen.jpg" alt="Request Screen" width="300"/>
+</div>
+
+- Browse available medications
+- Submit medication requests
+- Track request status
+- View request history
+
+### User Profile
+Personalized user experience with comprehensive profile management.
+
+<div align="center">
+  <img src="assets/screenshots/profile-screen.jpg" alt="Profile Screen" width="300"/>
+  <img src="assets/screenshots/update-profile-feature.jpg" alt="Update Profile" width="300"/>
+</div>
+
+- View and edit personal information
+- Track donation/request history
+- Update profile picture
+- Manage account settings
+
+### Home Dashboard
+Centralized hub for all user activities and quick access to features.
+
+<div align="center">
+  <img src="assets/screenshots/home-screen.jpg" alt="Home Screen" width="300"/>
+</div>
+
+- Personalized welcome screen
+- Activity tracking
+- Quick access to main features
+- Recent transactions overview
 
 ## Tech Stack
 
