@@ -15,6 +15,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          'assets/images/akbaymed-logo.png',
+          fit: BoxFit.fitWidth,
+        ),
         title: const Text(
           'Profile',
           style: TextStyle(
@@ -22,6 +26,7 @@ class ProfileScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: const Color(0xFFE0F2F1), // Light teal
         elevation: 0,
         actions: [
