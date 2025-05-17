@@ -1,0 +1,23 @@
+{
+    "name": "AkbayMed",
+    "short_name": "AkbayMed",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#E0F2F1",
+    "theme_color": "#00796B",
+    "description": "A Flutter-based application for medication donation and distribution in Philippine healthcare centers.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+} 
