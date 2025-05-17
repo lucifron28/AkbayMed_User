@@ -35,8 +35,11 @@ A Flutter-based Android application designed to facilitate medication donation a
     - [Key Features](#key-features)
     - [Database Functions and Triggers](#database-functions-and-triggers)
       - [Donation Count Management](#donation-count-management)
+      - [Donation Appointment Management](#donation-appointment-management)
       - [Request Appointment Management](#request-appointment-management)
       - [Inventory Management](#inventory-management)
+        - [Request Inventory Update](#request-inventory-update)
+        - [Donation Inventory Update](#donation-inventory-update)
     - [Storage Configuration](#storage-configuration)
       - [Avatar Storage](#avatar-storage)
       - [Integration with App](#integration-with-app)
@@ -210,6 +213,10 @@ lib/
 
 ## Database Schema
 
+<div align="center">
+  <img src="assets/screenshots/db-schema.png" alt="Database Schema Diagram" width="800"/>
+</div>
+
 ### Users Table
 ```sql
 CREATE TABLE users (
@@ -326,6 +333,42 @@ $$ LANGUAGE plpgsql;
 - Updates the user's donation_count in the users table
 - Handles both new donations and status changes
 
+#### Donation Appointment Management
+```sql
+CREATE OR REPLACE FUNCTION create_donation_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved')
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM appointments
+      WHERE donation_id = NEW.id
+    ) THEN
+      INSERT INTO appointments (
+        user_id,
+        donation_id,
+        appointment_date,
+        type,
+        created_at
+      )
+      VALUES (
+        NEW.donor_id,
+        NEW.id,
+        CURRENT_TIMESTAMP + INTERVAL '3 days',
+        'dropoff',
+        NOW()
+      );
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+**Purpose**: Automatically creates dropoff appointments for approved donations
+- Creates appointments 3 days after donation approval
+- Prevents duplicate appointments
+- Links appointments to both users and donations
+
 #### Request Appointment Management
 ```sql
 CREATE OR REPLACE FUNCTION create_request_appointment()
@@ -363,6 +406,8 @@ $$ LANGUAGE plpgsql;
 - Links appointments to both users and requests
 
 #### Inventory Management
+
+##### Request Inventory Update
 ```sql
 CREATE OR REPLACE FUNCTION update_inventory_from_request()
 RETURNS TRIGGER AS $$
@@ -373,19 +418,16 @@ DECLARE
 BEGIN
   IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL)
      OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
-    -- Check available inventory
     SELECT COALESCE(SUM(quantity), 0) INTO total_available
     FROM inventory
     WHERE medication_id = NEW.medication_id
     AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE);
 
-    -- Validate sufficient inventory
     IF total_available < NEW.quantity THEN
       RAISE EXCEPTION 'Insufficient inventory for medication_id %: requested %, available %',
         NEW.medication_id, NEW.quantity, total_available;
     END IF;
 
-    -- Update inventory using FIFO method
     FOR rec IN (
       SELECT id, quantity
       FROM inventory
@@ -419,6 +461,46 @@ $$ LANGUAGE plpgsql;
 - Updates inventory quantities automatically
 - Prevents over-allocation of medications
 
+##### Donation Inventory Update
+```sql
+CREATE OR REPLACE FUNCTION update_inventory_from_donation()
+RETURNS TRIGGER AS $$
+DECLARE
+  remaining_quantity INTEGER := NEW.quantity;
+  rec RECORD;
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL)
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+    INSERT INTO inventory (
+      medication_id,
+      quantity,
+      expiration_date,
+      source,
+      donation_id,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      NEW.medication_id,
+      NEW.quantity,
+      NEW.expiration_date,
+      'donation',
+      NEW.id,
+      NOW(),
+      NOW()
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+**Purpose**: Manages inventory levels when donations are approved
+- Creates new inventory entries for approved donations
+- Records medication quantity and expiration date
+- Tracks donation source and reference
+- Maintains inventory tracking
+- Updates timestamps for tracking
+
 ### Storage Configuration
 
 #### Avatar Storage
@@ -450,13 +532,25 @@ $$ LANGUAGE plpgsql;
    - Condition: status = 'approved'
    - Action: Increments user's donation_count
 
-2. **Request Appointment Trigger**
+2. **Donation Appointment Trigger**
+   - Event: AFTER INSERT OR UPDATE
+   - Table: donations
+   - Condition: status = 'approved'
+   - Action: Creates dropoff appointment
+
+3. **Donation Inventory Trigger**
+   - Event: AFTER INSERT OR UPDATE
+   - Table: donations
+   - Condition: status = 'approved'
+   - Action: Adds to inventory
+
+4. **Request Appointment Trigger**
    - Event: AFTER INSERT OR UPDATE
    - Table: requests
    - Condition: status = 'approved'
    - Action: Creates pickup appointment
 
-3. **Inventory Update Trigger**
+5. **Request Inventory Trigger**
    - Event: AFTER INSERT OR UPDATE
    - Table: requests
    - Condition: status = 'approved'
