@@ -78,17 +78,17 @@ class _RequestScreenState extends State<RequestScreen> {
     });
 
     try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
+      final patientId = _supabase.auth.currentUser?.id;
+      if (patientId == null) {
         throw Exception('User not logged in');
       }
 
-      // Submit the request to the requests table
+      // Submit the request to the requests table using the correct schema
       await _supabase.from('requests').insert({
-        'user_id': userId,
+        'patient_id': patientId,
         'medication_id': _selectedMedicationId,
         'quantity': int.parse(_quantityController.text.trim()),
-        'status': 'pending', // Default status
+        'status': 'pending',
       });
 
       if (mounted) {
