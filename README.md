@@ -9,19 +9,19 @@ A Flutter-based Android application designed to facilitate medication donation a
 ## Screenshots
 
 ### Authentication
-![Login Screen](assets/screenshots/login_screen.png)
-![Registration Screen](assets/screenshots/registration_screen.png)
+![Login Screen](assets/screenshots/login-screen.jpg)
+![Registration Screen](assets/screenshots/registration-screen.jpg)
 
 ### Main Features
-![Home Screen](assets/screenshots/home_screen.png)
-![Donation Screen](assets/screenshots/donation_screen.png)
-![Request Screen](assets/screenshots/request_screen.png)
-![Profile Screen](assets/screenshots/profile_screen.png)
+![Home Screen](assets/screenshots/home-screen.jpg)
+![Donation Screen](assets/screenshots/donation-screen.jpg)
+![Request Screen](assets/screenshots/request-screen.jpg)
+![Profile Screen](assets/screenshots/profile-screen.jpg)
 
 ### Additional Features
-![Medication Search](assets/screenshots/medication_search.png)
-![Donation Statistics](assets/screenshots/donation_history.png)
-![Request Status](assets/screenshots/request_status.png)
+![Medication Search](assets/screenshots/search-suggestions.jpg)
+![Donation Statistics](assets/screenshots/profile-screen.jpg)
+![Update Profile](assets/screenshots/update-profile-feature.jpg)
 
 ## Table of Contents
 - [AkbayMed](#akbaymed)
