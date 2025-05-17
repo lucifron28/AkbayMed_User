@@ -296,11 +296,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildAppointmentsTable() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             spreadRadius: 0,
             offset: const Offset(0, 4),
@@ -325,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 13,
                 ),
                 headingRowHeight: 48,
-                dataRowHeight: 56,
+                dataRowMinHeight: 56,
                 dividerThickness: 1,
               ),
             ),
@@ -397,10 +397,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: getStatusColor(status).withOpacity(0.1),
+                            color: getStatusColor(status).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: getStatusColor(status).withOpacity(0.5),
+                              color: getStatusColor(status).withValues(alpha: 0.5),
                             ),
                           ),
                           child: Text(
