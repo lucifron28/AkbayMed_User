@@ -470,7 +470,7 @@ class _DonationScreenState extends State<DonationScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 4,
-                            shadowColor: Colors.black.withAlpha(50),
+                            shadowColor: Colors.black.withValues(alpha: 0.2),
                           ),
                           child: _isLoading
                               ? const SizedBox(
