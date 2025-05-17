@@ -53,9 +53,9 @@ class ProfileScreen extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () async {
-                        final _supabase = Supabase.instance.client;
+                        final supabase = Supabase.instance.client;
 
-                        await _supabase.auth.signOut();
+                        await supabase.auth.signOut();
                         if (context.mounted) {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
@@ -110,6 +110,7 @@ class _ProfileContentState extends State<ProfileContent> {
   String _email = '';
   String? _avatarUrl;
   bool _isVerified = false;
+  int _donationCount = 0; // New field for donation count
 
   @override
   void initState() {
@@ -131,7 +132,7 @@ class _ProfileContentState extends State<ProfileContent> {
 
       final data = await _supabase
           .from('users')
-          .select('name, email, avatar_url, is_verified')
+          .select('name, email, avatar_url, is_verified, donation_count')
           .eq('id', userId)
           .single();
 
@@ -140,6 +141,7 @@ class _ProfileContentState extends State<ProfileContent> {
         _email = data['email'] ?? 'No email found';
         _avatarUrl = data['avatar_url'];
         _isVerified = data['is_verified'] ?? false;
+        _donationCount = data['donation_count'] ?? 0;
         _isLoading = false;
       });
     } catch (e) {
@@ -287,13 +289,142 @@ class _ProfileContentState extends State<ProfileContent> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      _isVerified ? 'Verified' : 'Not Verified',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: _isVerified ? Colors.green : Colors.red,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: _isVerified ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: _isVerified ? Colors.green.withOpacity(0.5) : Colors.red.withOpacity(0.5),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _isVerified ? Icons.verified : Icons.warning,
+                                color: _isVerified ? Colors.green : Colors.red,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                _isVerified ? 'Verified' : 'Not Verified',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: _isVerified ? Colors.green : Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    
+                    // Donation count card
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            spreadRadius: 0,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Donation Statistics',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF004D40),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF00796B).withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: const Color(0xFF00796B),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        _donationCount.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF00796B),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    'Total Donations',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF004D40),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          if (_donationCount == 0)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                'You haven\'t made any donations yet. Start donating to help others!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color(0xFF00796B),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          if (_donationCount > 0)
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF00796B).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                'Thank you for your ${_donationCount} contribution${_donationCount > 1 ? 's' : ''}! Your generosity is making a difference.',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Color(0xFF00796B),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -304,3 +435,4 @@ class _ProfileContentState extends State<ProfileContent> {
     );
   }
 }
+
