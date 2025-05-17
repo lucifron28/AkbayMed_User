@@ -307,12 +307,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         alignment: Alignment.topCenter,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: 0.7),
           // Fixed: withValues → withOpacity
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               // Fixed: withValues → withOpacity
               blurRadius: 10,
               spreadRadius: 0,
@@ -357,7 +357,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     final appointment = _appointments[index];
 
                     // Determine appointment type (drop-off or pick-up)
-                    final type = appointment['type'] ?? '';
                     final isDropOff = appointment['donation_id'] != null;
 
                     // Get status data from the appropriate table
@@ -417,12 +416,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: getStatusColor(status).withOpacity(0.1),
-                              // Fixed: withValues → withOpacity
+                              color: getStatusColor(status).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: getStatusColor(status).withOpacity(
-                                    0.5), // Fixed: withValues → withOpacity
+                                color: getStatusColor(status).withValues(
+                                    alpha: 0.5),
                               ),
                             ),
                             child: Text(
