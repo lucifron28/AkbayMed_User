@@ -137,6 +137,10 @@ class _RequestScreenState extends State<RequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          'assets/images/akbaymed-logo.png',
+          fit: BoxFit.fitWidth,
+        ),
         title: const Text(
           'Request Medicine',
           style: TextStyle(
@@ -144,6 +148,7 @@ class _RequestScreenState extends State<RequestScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         backgroundColor: const Color(0xFFE0F2F1), // Light teal
         elevation: 0,
         bottom: PreferredSize(
@@ -190,7 +195,7 @@ class _RequestScreenState extends State<RequestScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE0F2F1).withOpacity(0.7),
+                            color: const Color(0xFFE0F2F1).withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: const Color(0xFF00796B), width: 1),
                           ),
@@ -319,7 +324,7 @@ class _RequestScreenState extends State<RequestScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 4,
-                            shadowColor: Colors.black.withOpacity(0.2),
+                            shadowColor: Colors.black.withValues(alpha: 0.2),
                           ),
                           child: _isLoading
                               ? const SizedBox(
