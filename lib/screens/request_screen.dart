@@ -164,9 +164,10 @@ class _RequestScreenState extends State<RequestScreen> {
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFE0F2F1), Color(0xFFB2DFDB)], // Light teal gradient
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xffb0dab9), Color(0xffdad299)],
+            stops: [0, 1],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
