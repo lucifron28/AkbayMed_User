@@ -26,8 +26,22 @@ A Flutter-based Android application designed to facilitate medication donation a
     - [Supabase Integration](#supabase-integration)
   - [Database Schema](#database-schema)
     - [Users Table](#users-table)
+    - [Medications Table](#medications-table)
     - [Donations Table](#donations-table)
     - [Requests Table](#requests-table)
+    - [Inventory Table](#inventory-table)
+    - [Appointments Table](#appointments-table)
+    - [Table Relationships](#table-relationships)
+    - [Key Features](#key-features)
+    - [Database Functions and Triggers](#database-functions-and-triggers)
+      - [Donation Count Management](#donation-count-management)
+      - [Request Appointment Management](#request-appointment-management)
+      - [Inventory Management](#inventory-management)
+    - [Storage Configuration](#storage-configuration)
+      - [Avatar Storage](#avatar-storage)
+      - [Integration with App](#integration-with-app)
+    - [Trigger Implementation Details](#trigger-implementation-details)
+    - [Error Handling](#error-handling)
   - [UI/UX Design](#uiux-design)
     - [Design System](#design-system)
     - [Color Scheme](#color-scheme)
@@ -201,11 +215,23 @@ lib/
 CREATE TABLE users (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     avatar_url TEXT,
-    is_verified BOOLEAN DEFAULT false,
-    donation_count INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
+    is_verified BOOLEAN NOT NULL DEFAULT TRUE,
+    donation_count BIGINT NOT NULL DEFAULT 0
+);
+```
+
+### Medications Table
+```sql
+CREATE TABLE medications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -213,12 +239,12 @@ CREATE TABLE users (
 ```sql
 CREATE TABLE donations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    donor_id UUID REFERENCES auth.users(id),
-    medication_id UUID REFERENCES medications(id),
+    donor_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
     quantity INTEGER NOT NULL,
     expiration_date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT NOW()
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -226,13 +252,221 @@ CREATE TABLE donations (
 ```sql
 CREATE TABLE requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    patient_id UUID REFERENCES auth.users(id),
-    medication_id UUID REFERENCES medications(id),
+    patient_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
     quantity INTEGER NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT NOW()
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
 );
 ```
+
+### Inventory Table
+```sql
+CREATE TABLE inventory (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    medication_id UUID REFERENCES medications(id),
+    quantity INTEGER NOT NULL DEFAULT 0,
+    expiration_date DATE,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
+```
+
+### Appointments Table
+```sql
+CREATE TABLE appointments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id),
+    donation_id UUID REFERENCES donations(id),
+    request_id UUID REFERENCES requests(id),
+    appointment_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    type VARCHAR NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
+```
+
+### Table Relationships
+- **Users** (1) → (N) **Donations**: One user can make multiple donations
+- **Users** (1) → (N) **Requests**: One user can make multiple requests
+- **Users** (1) → (N) **Appointments**: One user can have multiple appointments
+- **Medications** (1) → (N) **Donations**: One medication can be donated multiple times
+- **Medications** (1) → (N) **Requests**: One medication can be requested multiple times
+- **Medications** (1) → (1) **Inventory**: One medication has one inventory record
+- **Donations** (1) → (N) **Appointments**: One donation can have multiple appointments
+- **Requests** (1) → (N) **Appointments**: One request can have multiple appointments
+
+### Key Features
+- UUID primary keys for all tables
+- Automatic timestamp management for created_at and updated_at
+- Foreign key constraints for referential integrity
+- Default values for status fields
+- Proper indexing on frequently queried columns
+- Timestamp with time zone for user-related timestamps
+- Timestamp without time zone for business logic timestamps
+
+### Database Functions and Triggers
+
+#### Donation Count Management
+```sql
+CREATE OR REPLACE FUNCTION increment_donation_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR 
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+        UPDATE public.users
+        SET donation_count = donation_count + 1
+        WHERE id = NEW.donor_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+**Purpose**: Automatically tracks and updates the donation count for users
+- Triggers when a donation is approved
+- Updates the user's donation_count in the users table
+- Handles both new donations and status changes
+
+#### Request Appointment Management
+```sql
+CREATE OR REPLACE FUNCTION create_request_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved')
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM appointments
+      WHERE request_id = NEW.id
+    ) THEN
+      INSERT INTO appointments (
+        user_id,
+        request_id,
+        appointment_date,
+        type,
+        created_at
+      )
+      VALUES (
+        NEW.patient_id,
+        NEW.id,
+        CURRENT_TIMESTAMP + INTERVAL '3 days',
+        'pickup',
+        NOW()
+      );
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+**Purpose**: Automatically creates pickup appointments for approved requests
+- Creates appointments 3 days after request approval
+- Prevents duplicate appointments
+- Links appointments to both users and requests
+
+#### Inventory Management
+```sql
+CREATE OR REPLACE FUNCTION update_inventory_from_request()
+RETURNS TRIGGER AS $$
+DECLARE
+  total_available INTEGER;
+  remaining_request INTEGER := NEW.quantity;
+  rec RECORD;
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL)
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+    -- Check available inventory
+    SELECT COALESCE(SUM(quantity), 0) INTO total_available
+    FROM inventory
+    WHERE medication_id = NEW.medication_id
+    AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE);
+
+    -- Validate sufficient inventory
+    IF total_available < NEW.quantity THEN
+      RAISE EXCEPTION 'Insufficient inventory for medication_id %: requested %, available %',
+        NEW.medication_id, NEW.quantity, total_available;
+    END IF;
+
+    -- Update inventory using FIFO method
+    FOR rec IN (
+      SELECT id, quantity
+      FROM inventory
+      WHERE medication_id = NEW.medication_id
+      AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE)
+      AND quantity > 0
+      ORDER BY COALESCE(expiration_date, '9999-12-31'::DATE) ASC
+    ) LOOP
+      IF remaining_request <= 0 THEN
+        EXIT;
+      END IF;
+      DECLARE
+        deduct_amount INTEGER := LEAST(remaining_request, rec.quantity);
+      BEGIN
+        UPDATE inventory
+        SET quantity = quantity - deduct_amount,
+            updated_at = NOW()
+        WHERE id = rec.id;
+        remaining_request := remaining_request - deduct_amount;
+      END;
+    END LOOP;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+**Purpose**: Manages inventory levels when requests are approved
+- Validates available inventory before processing
+- Uses FIFO (First In, First Out) method for inventory management
+- Considers expiration dates when allocating inventory
+- Updates inventory quantities automatically
+- Prevents over-allocation of medications
+
+### Storage Configuration
+
+#### Avatar Storage
+- **Bucket Name**: `avatars`
+- **Purpose**: Stores user profile pictures
+- **Configuration**:
+  - Public access for viewing
+  - Secure upload process
+  - Automatic URL generation
+  - File size limits and type restrictions
+
+#### Integration with App
+1. **Avatar Upload**:
+   - User selects image in profile screen
+   - Image is processed and compressed
+   - Uploaded to Supabase Storage
+   - URL stored in user's avatar_url field
+
+2. **Avatar Display**:
+   - Retrieved from storage using avatar_url
+   - Cached for performance
+   - Fallback to default avatar if not found
+
+### Trigger Implementation Details
+
+1. **Donation Count Trigger**
+   - Event: AFTER INSERT OR UPDATE
+   - Table: donations
+   - Condition: status = 'approved'
+   - Action: Increments user's donation_count
+
+2. **Request Appointment Trigger**
+   - Event: AFTER INSERT OR UPDATE
+   - Table: requests
+   - Condition: status = 'approved'
+   - Action: Creates pickup appointment
+
+3. **Inventory Update Trigger**
+   - Event: AFTER INSERT OR UPDATE
+   - Table: requests
+   - Condition: status = 'approved'
+   - Action: Updates inventory quantities
+
+### Error Handling
+- Inventory validation before updates
+- Exception handling for insufficient stock
+- Duplicate appointment prevention
+- Transaction management for data consistency
 
 ## UI/UX Design
 
