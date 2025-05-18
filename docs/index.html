@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkbayMed Documentation</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/akbaymed-logo.png" alt="AkbayMed Logo" class="logo" />
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-links">
+                    <li>
+                        <a href="#getting-started"><i class="fas fa-rocket"></i> Getting Started</a>
+                        <ul>
+                            <li><a href="#introduction">Introduction</a></li>
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#prerequisites">Prerequisites</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#features"><i class="fas fa-star"></i> Features</a>
+                        <ul>
+                            <li><a href="#authentication">Authentication</a></li>
+                            <li><a href="#medication-donation">Medication Donation</a></li>
+                            <li><a href="#medication-requests">Medication Requests</a></li>
+                            <li><a href="#user-profile">User Profile</a></li>
+                            <li><a href="#home-dashboard">Home Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#tech-stack"><i class="fas fa-layer-group"></i> Tech Stack</a>
+                        <ul>
+                            <li><a href="#frontend">Frontend</a></li>
+                            <li><a href="#backend">Backend</a></li>
+                            <li><a href="#dependencies">Dependencies</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#api-integration"><i class="fas fa-code"></i> API Integration</a>
+                        <ul>
+                            <li><a href="#openfda-api">openFDA API</a></li>
+                            <li><a href="#supabase-integration">Supabase Integration</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#database"><i class="fas fa-database"></i> Database</a>
+                        <ul>
+                            <li><a href="#tables">Tables</a></li>
+                            <li><a href="#row-level-security">Row Level Security</a></li>
+                            <li><a href="#storage-configuration">Storage Configuration</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#ui-ux"><i class="fas fa-paint-brush"></i> UI/UX Design</a>
+                        <ul>
+                            <li><a href="#design-system">Design System</a></li>
+                            <li><a href="#color-scheme">Color Scheme</a></li>
+                            <li><a href="#typography">Typography</a></li>
+                            <li><a href="#components">Components</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Getting Started Section -->
+                <section id="getting-started">
+                    <div class="section-header">
+                        <i class="fas fa-rocket"></i>
+                        <h2>Getting Started</h2>
+                    </div>
+                    
+                    <div id="introduction" class="card">
+                        <h3>Introduction</h3>
+                        <p>
+                            AkbayMed is a Flutter-based Android application designed to facilitate medication donation
+                            and distribution in Philippine healthcare centers. The app connects donors with patients
+                            in need, ensuring safe and transparent medicine redistribution.
+                        </p>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-hand-holding-medical"></i>
+                                <h4>Medication Donation</h4>
+                                <p>Easy and secure way to donate medications</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-user-md"></i>
+                                <h4>Patient Support</h4>
+                                <p>Connect patients with needed medications</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>Safe Distribution</h4>
+                                <p>Verified and secure medication handling</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="installation" class="card">
+                        <h3>Installation</h3>
+                        <p>Follow these steps to set up the development environment:</p>
+                        <div class="code-block">
+                            <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/lucifron28/AkbayMed_User.git
+cd AkbayMed_User
+
+# Install dependencies
+flutter pub get
+
+# Create .env file
+cp .env.example .env</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="prerequisites" class="card">
+                        <h3>Prerequisites</h3>
+                        <div class="prerequisites-grid">
+                            <div class="prerequisite-item">
+                                <i class="fab fa-flutter"></i>
+                                <span>Flutter SDK 3.x</span>
+                            </div>
+                            <div class="prerequisite-item">
+                                <i class="fas fa-code"></i>
+                                <span>Android Studio / VS Code</span>
+                            </div>
+                            <div class="prerequisite-item">
+                                <i class="fab fa-android"></i>
+                                <span>Android SDK (API 26+)</span>
+                            </div>
+                            <div class="prerequisite-item">
+                                <i class="fab fa-git-alt"></i>
+                                <span>Git</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section id="features">
+                    <div class="section-header">
+                        <i class="fas fa-star"></i>
+                        <h2>Features</h2>
+                    </div>
+                    
+                    <div id="authentication" class="card">
+                        <h3>Authentication</h3>
+                        <p>Secure and user-friendly authentication system for both donors and patients.</p>
+                        <div class="feature-details">
+                            <div class="feature-list">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Email and password-based authentication</li>
+                                    <li><i class="fas fa-check"></i> User registration with role selection</li>
+                                    <li><i class="fas fa-check"></i> Secure session management</li>
+                                    <li><i class="fas fa-check"></i> Profile management with avatar upload</li>
+                                </ul>
+                            </div>
+                            <div class="feature-image">
+                                <img src="../assets/screenshots/login-screen.jpg" alt="Login Screen" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="medication-donation" class="card">
+                        <h3>Medication Donation</h3>
+                        <p>Streamlined process for donors to contribute medications to those in need.</p>
+                        <div class="feature-details">
+                            <div class="feature-list">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Donation submission with medication details</li>
+                                    <li><i class="fas fa-check"></i> Integration with openFDA API for medication verification</li>
+                                    <li><i class="fas fa-check"></i> Expiration date tracking</li>
+                                    <li><i class="fas fa-check"></i> Donation history and status tracking</li>
+                                </ul>
+                            </div>
+                            <div class="feature-image">
+                                <img src="../assets/screenshots/donation-screen.jpg" alt="Donation Screen" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="medication-requests" class="card">
+                        <h3>Medication Requests</h3>
+                        <p>Easy-to-use interface for patients to request needed medications.</p>
+                        <div class="feature-details">
+                            <div class="feature-list">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Browse available medications</li>
+                                    <li><i class="fas fa-check"></i> Submit medication requests</li>
+                                    <li><i class="fas fa-check"></i> Track request status</li>
+                                    <li><i class="fas fa-check"></i> View request history</li>
+                                </ul>
+                            </div>
+                            <div class="feature-image">
+                                <img src="../assets/screenshots/request-screen.jpg" alt="Request Screen" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="user-profile" class="card">
+                        <h3>User Profile</h3>
+                        <p>Personalized user experience with comprehensive profile management.</p>
+                        <div class="feature-details">
+                            <div class="feature-list">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> View and edit personal information</li>
+                                    <li><i class="fas fa-check"></i> Track donation/request history</li>
+                                    <li><i class="fas fa-check"></i> Update profile picture</li>
+                                    <li><i class="fas fa-check"></i> Manage account settings</li>
+                                </ul>
+                            </div>
+                            <div class="feature-image">
+                                <img src="../assets/screenshots/profile-screen.jpg" alt="Profile Screen" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="home-dashboard" class="card">
+                        <h3>Home Dashboard</h3>
+                        <p>Centralized hub for all user activities and quick access to features.</p>
+                        <div class="feature-details">
+                            <div class="feature-list">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Personalized welcome screen</li>
+                                    <li><i class="fas fa-check"></i> Activity tracking</li>
+                                    <li><i class="fas fa-check"></i> Quick access to main features</li>
+                                    <li><i class="fas fa-check"></i> Recent transactions overview</li>
+                                </ul>
+                            </div>
+                            <div class="feature-image">
+                                <img src="../assets/screenshots/home-screen.jpg" alt="Home Screen" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tech Stack Section -->
+                <section id="tech-stack">
+                    <div class="section-header">
+                        <i class="fas fa-layer-group"></i>
+                        <h2>Tech Stack</h2>
+                    </div>
+                    
+                    <div id="frontend" class="card">
+                        <h3>Frontend</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <i class="fab fa-flutter"></i>
+                                <h4>Flutter 3.29.3</h4>
+                                <p>Cross-platform UI framework</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-code"></i>
+                                <h4>Dart 3.7.2</h4>
+                                <p>Programming language</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-palette"></i>
+                                <h4>Material 3</h4>
+                                <p>UI Components</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="backend" class="card">
+                        <h3>Backend</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>Supabase Auth</h4>
+                                <p>Authentication service</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-database"></i>
+                                <h4>Supabase PostgreSQL</h4>
+                                <p>Database service</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-cloud"></i>
+                                <h4>Supabase Storage</h4>
+                                <p>File storage service</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dependencies" class="card">
+                        <h3>Dependencies</h3>
+                        <div class="code-block">
+                            <pre><code class="language-yaml">dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.9.0
+  flutter_dotenv: ^5.2.1
+  logger: ^2.5.0
+  image_picker: ^1.0.4
+  path: ^1.8.3
+  permission_handler: ^11.0.0
+  http: ^1.4.0
+  intl: ^0.19.0</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Integration Section -->
+                <section id="api-integration">
+                    <div class="section-header">
+                        <i class="fas fa-code"></i>
+                        <h2>API Integration</h2>
+                    </div>
+
+                    <div id="openfda-api" class="card">
+                        <h3>openFDA API</h3>
+                        <p>Integration with the openFDA API for medication verification and information.</p>
+                        <div class="code-block">
+                            <pre><code class="language-dart">Future<Map<String, dynamic>> searchMedication(String brandName) async {
+  final response = await http.get(
+    Uri.parse('https://api.fda.gov/drug/label.json?search=brand_name:$brandName&limit=1'),
+  );
+
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception('Failed to load medication data');
+  }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="supabase-integration" class="card">
+                        <h3>Supabase Integration</h3>
+                        <p>Authentication, database, and storage integration with Supabase.</p>
+                        <div class="code-block">
+                            <pre><code class="language-dart">// Authentication
+final supabase = Supabase.instance.client;
+final response = await supabase.auth.signInWithPassword(
+  email: email,
+  password: password,
+);
+
+// Database Operations
+final data = await supabase
+  .from('donations')
+  .select()
+  .order('created_at', ascending: false);</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Database Section -->
+                <section id="database">
+                    <div class="section-header">
+                        <i class="fas fa-database"></i>
+                        <h2>Database</h2>
+                    </div>
+
+                    <div id="tables" class="card">
+                        <h3>Tables</h3>
+                        <div class="code-block">
+                            <pre><code class="language-sql">-- Users Table
+CREATE TABLE users (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    avatar_url TEXT,
+    is_verified BOOLEAN NOT NULL DEFAULT TRUE,
+    donation_count BIGINT NOT NULL DEFAULT 0
+);
+
+-- Medications Table
+CREATE TABLE medications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="row-level-security" class="card">
+                        <h3>Row Level Security</h3>
+                        <div class="code-block">
+                            <pre><code class="language-sql">-- Enable RLS
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+CREATE POLICY "Users can view their own profile"
+ON users FOR SELECT
+USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile"
+ON users FOR UPDATE
+USING (auth.uid() = id);</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="storage-configuration" class="card">
+                        <h3>Storage Configuration</h3>
+                        <div class="code-block">
+                            <pre><code class="language-sql">-- Create storage bucket for avatars
+INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true);
+
+-- Set up storage policies
+CREATE POLICY "Avatar images are publicly accessible"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'avatars');
+
+CREATE POLICY "Users can upload their own avatar"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'avatars' AND auth.uid() = owner);</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- UI/UX Design Section -->
+                <section id="ui-ux">
+                    <div class="section-header">
+                        <i class="fas fa-paint-brush"></i>
+                        <h2>UI/UX Design</h2>
+                    </div>
+
+                    <div id="design-system" class="card">
+                        <h3>Design System</h3>
+                        <p>AkbayMed follows Material Design 3 guidelines for a consistent and modern user experience.</p>
+                        <div class="design-grid">
+                            <div class="design-item">
+                                <h4>Components</h4>
+                                <ul>
+                                    <li>Material 3 widgets</li>
+                                    <li>Custom themed components</li>
+                                    <li>Responsive layouts</li>
+                                </ul>
+                            </div>
+                            <div class="design-item">
+                                <h4>Layout</h4>
+                                <ul>
+                                    <li>Grid-based system</li>
+                                    <li>Consistent spacing</li>
+                                    <li>Responsive breakpoints</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="color-scheme" class="card">
+                        <h3>Color Scheme</h3>
+                        <div class="color-grid">
+                            <div class="color-item">
+                                <div class="color-box" style="background-color: #00796B;"></div>
+                                <div class="color-info">
+                                    <h4>Primary</h4>
+                                    <p>Teal 700 (#00796B)</p>
+                                </div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-box" style="background-color: #004D40;"></div>
+                                <div class="color-info">
+                                    <h4>Secondary</h4>
+                                    <p>Teal 900 (#004D40)</p>
+                                </div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-box" style="background-color: #B2DFDB;"></div>
+                                <div class="color-info">
+                                    <h4>Accent</h4>
+                                    <p>Teal 100 (#B2DFDB)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="typography" class="card">
+                        <h3>Typography</h3>
+                        <div class="typography-grid">
+                            <div class="typography-item">
+                                <h4>Headings</h4>
+                                <p class="heading-1">Heading 1</p>
+                                <p class="heading-2">Heading 2</p>
+                                <p class="heading-3">Heading 3</p>
+                            </div>
+                            <div class="typography-item">
+                                <h4>Body Text</h4>
+                                <p class="body-large">Body Large</p>
+                                <p class="body-medium">Body Medium</p>
+                                <p class="body-small">Body Small</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="components" class="card">
+                        <h3>Components</h3>
+                        <div class="components-grid">
+                            <div class="component-item">
+                                <h4>Buttons</h4>
+                                <div class="component-preview">
+                                    <button class="btn-primary">Primary Button</button>
+                                    <button class="btn-secondary">Secondary Button</button>
+                                </div>
+                            </div>
+                            <div class="component-item">
+                                <h4>Input Fields</h4>
+                                <div class="component-preview">
+                                    <input type="text" placeholder="Text Input" />
+                                    <select>
+                                        <option>Select Option</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
