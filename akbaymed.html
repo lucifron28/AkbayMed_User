@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkbayMed Documentation</title>
+    <!-- Add Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <!-- Add Prism.js components -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #00796B;
+            --secondary-color: #004D40;
+            --background-color: #E0F2F1;
+            --accent-color: #B2DFDB;
+            --text-color: #333;
+            --heading-color: #004D40;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 12pt;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+
+            .content {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            img {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 2em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2em;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.3em;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.8em;
+            margin-top: 1.5em;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.2em;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.4em;
+            margin-top: 1.2em;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 1.5em;
+            border-radius: 8px;
+            margin: 2em 0;
+            border: 1px solid #dee2e6;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            border-bottom: none;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 1em;
+        }
+
+        .toc li {
+            margin: 0.5em 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .toc ul ul {
+            margin-left: 1.5em;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f8f9fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+
+        .feature-section {
+            margin: 2em 0;
+            padding: 1.5em;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .feature-section h3 {
+            margin-top: 0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1em;
+            margin: 1em 0;
+        }
+
+        .screenshot-grid img {
+            width: 100%;
+            height: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+
+        th, td {
+            padding: 0.75em;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin: 2em 0;
+        }
+
+        .logo-container img {
+            max-width: 400px;
+            height: auto;
+        }
+
+        .section {
+            margin: 2em 0;
+            padding: 1em;
+            border-left: 4px solid var(--primary-color);
+            background: #f8f9fa;
+        }
+
+        /* Update image styles */
+        .image-container {
+            text-align: center;
+            margin: 2em 0;
+        }
+
+        .image-container img {
+            display: inline-block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Update code block styles */
+        pre[class*="language-"] {
+            background: #2d2d2d !important;
+            border-radius: 8px;
+            margin: 1.5em 0;
+            padding: 1.5em;
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+            text-shadow: none !important;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* SQL specific styles */
+        .language-sql .keyword {
+            color: #f92672;
+        }
+
+        .language-sql .string {
+            color: #a6e22e;
+        }
+
+        .language-sql .number {
+            color: #ae81ff;
+        }
+
+        .language-sql .comment {
+            color: #75715e;
+        }
+
+        .language-sql .function {
+            color: #66d9ef;
+        }
+
+        .language-sql .operator {
+            color: #f8f8f2;
+        }
+
+        /* Print styles for code blocks */
+        @media print {
+            pre[class*="language-"] {
+                background: #f8f9fa !important;
+                border: 1px solid #dee2e6;
+                page-break-inside: avoid;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                max-width: 100%;
+            }
+
+            code[class*="language-"] {
+                color: #333 !important;
+                text-shadow: none !important;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .language-sql .keyword {
+                color: #d73a49 !important;
+            }
+
+            .language-sql .string {
+                color: #22863a !important;
+            }
+
+            .language-sql .number {
+                color: #005cc5 !important;
+            }
+
+            .language-sql .comment {
+                color: #6a737d !important;
+            }
+
+            .language-sql .function {
+                color: #6f42c1 !important;
+            }
+
+            .language-sql .operator {
+                color: #333 !important;
+            }
+        }
+
+        /* Update screenshot grid */
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5em;
+            margin: 2em 0;
+            justify-items: center;
+        }
+
+        .screenshot-grid .image-container {
+            margin: 0;
+            width: 100%;
+        }
+
+        .screenshot-grid img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* Update logo container */
+        .logo-container {
+            text-align: center;
+            margin: 3em 0;
+            padding: 2em;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo-container img {
+            max-width: 400px;
+            height: auto;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="logo-container">
+            <img src="assets/images/akbaymed-logo.png" alt="AkbayMed Logo" />
+        </div>
+
+        <h1>AkbayMed</h1>
+        <p class="lead">
+            A Flutter-based Android application designed to facilitate medication donation
+            and distribution in Philippine healthcare centers. The app connects donors
+            with patients in need, ensuring safe and transparent medicine redistribution.
+        </p>
+
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li>
+                    <a href="#akbaymed">AkbayMed</a>
+                    <ul>
+                        <li><a href="#table-of-contents">Table of Contents</a></li>
+                        <li>
+                            <a href="#features">Features</a>
+                            <ul>
+                                <li><a href="#authentication">Authentication</a></li>
+                                <li><a href="#medication-donation">Medication Donation</a></li>
+                                <li><a href="#medication-requests">Medication Requests</a></li>
+                                <li><a href="#user-profile">User Profile</a></li>
+                                <li><a href="#home-dashboard">Home Dashboard</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#tech-stack">Tech Stack</a>
+                            <ul>
+                                <li><a href="#frontend">Frontend</a></li>
+                                <li><a href="#backend">Backend</a></li>
+                                <li><a href="#dependencies">Dependencies</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#project-structure">Project Structure</a></li>
+                        <li>
+                            <a href="#api-integration">API Integration</a>
+                            <ul>
+                                <li><a href="#openfda-api">openFDA API</a></li>
+                                <li><a href="#supabase-integration">Supabase Integration</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#database-schema">Database Schema</a>
+                            <ul>
+                                <li><a href="#users-table">Users Table</a></li>
+                                <li><a href="#medications-table">Medications Table</a></li>
+                                <li><a href="#donations-table">Donations Table</a></li>
+                                <li><a href="#requests-table">Requests Table</a></li>
+                                <li><a href="#inventory-table">Inventory Table</a></li>
+                                <li><a href="#appointments-table">Appointments Table</a></li>
+                                <li><a href="#table-relationships">Table Relationships</a></li>
+                                <li><a href="#key-features">Key Features</a></li>
+                                <li>
+                                    <a href="#database-functions-and-triggers"
+                                      >Database Functions and Triggers</a
+                                    >
+                                    <ul>
+                                        <li>
+                                            <a href="#donation-count-management"
+                                              >Donation Count Management</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="#donation-appointment-management"
+                                              >Donation Appointment Management</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="#request-appointment-management"
+                                              >Request Appointment Management</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="#inventory-management">Inventory Management</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="#request-inventory-update"
+                                                      >Request Inventory Update</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a href="#donation-inventory-update"
+                                                      >Donation Inventory Update</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#storage-configuration">Storage Configuration</a>
+                                    <ul>
+                                        <li><a href="#avatar-storage">Avatar Storage</a></li>
+                                        <li><a href="#integration-with-app">Integration with App</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#trigger-implementation-details"
+                                      >Trigger Implementation Details</a
+                                    >
+                                </li>
+                                <li><a href="#error-handling">Error Handling</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#uiux-design">UI/UX Design</a>
+                            <ul>
+                                <li><a href="#design-system">Design System</a></li>
+                                <li><a href="#color-scheme">Color Scheme</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#development-setup">Development Setup</a></li>
+                        <li><a href="#contributing">Contributing</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Features</h2>
+            <h3 id="authentication">Authentication</h3>
+            <p>
+                Secure and user-friendly authentication system for both donors and patients.
+            </p>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/login-screen.jpg"
+                        alt="Login Screen"
+                        width="300"
+                    />
+                    <img
+                        src="assets/screenshots/registration-screen.jpg"
+                        alt="Registration Screen"
+                        width="300"
+                    />
+                </p>
+            </div>
+            <ul>
+                <li>Email and password-based authentication</li>
+                <li>User registration with role selection</li>
+                <li>Secure session management</li>
+                <li>Profile management with avatar upload</li>
+            </ul>
+            <h3 id="medication-donation">Medication Donation</h3>
+            <p>
+                Streamlined process for donors to contribute medications to those in need.
+            </p>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/donation-screen.jpg"
+                        alt="Donation Screen"
+                        width="300"
+                    />
+                    <img
+                        src="assets/screenshots/search-suggestions.jpg"
+                        alt="Medication Search"
+                        width="300"
+                    />
+                </p>
+            </div>
+            <ul>
+                <li>Donation submission with medication details</li>
+                <li>Integration with openFDA API for medication verification</li>
+                <li>Expiration date tracking</li>
+                <li>Donation history and status tracking</li>
+            </ul>
+            <h3 id="medication-requests">Medication Requests</h3>
+            <p>Easy-to-use interface for patients to request needed medications.</p>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/request-screen.jpg"
+                        alt="Request Screen"
+                        width="300"
+                    />
+                </p>
+            </div>
+            <ul>
+                <li>Browse available medications</li>
+                <li>Submit medication requests</li>
+                <li>Track request status</li>
+                <li>View request history</li>
+            </ul>
+            <h3 id="user-profile">User Profile</h3>
+            <p>Personalized user experience with comprehensive profile management.</p>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/profile-screen.jpg"
+                        alt="Profile Screen"
+                        width="300"
+                    />
+                    <img
+                        src="assets/screenshots/update-profile-feature.jpg"
+                        alt="Update Profile"
+                        width="300"
+                    />
+                </p>
+            </div>
+            <ul>
+                <li>View and edit personal information</li>
+                <li>Track donation/request history</li>
+                <li>Update profile picture</li>
+                <li>Manage account settings</li>
+            </ul>
+            <h3 id="home-dashboard">Home Dashboard</h3>
+            <p>Centralized hub for all user activities and quick access to features.</p>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/home-screen.jpg"
+                        alt="Home Screen"
+                        width="300"
+                    />
+                </p>
+            </div>
+            <ul>
+                <li>Personalized welcome screen</li>
+                <li>Activity tracking</li>
+                <li>Quick access to main features</li>
+                <li>Recent transactions overview</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Tech Stack</h2>
+            <h3 id="frontend">Frontend</h3>
+            <ul>
+                <li><strong>Framework</strong>: Flutter 3.29.3</li>
+                <li><strong>Language</strong>: Dart 3.7.2</li>
+                <li><strong>UI Components</strong>: Material 3</li>
+                <li><strong>State Management</strong>: Flutter's built-in StatefulWidget</li>
+                <li><strong>Navigation</strong>: Flutter Navigator 2.0</li>
+            </ul>
+            <h3 id="backend">Backend</h3>
+            <ul>
+                <li><strong>Authentication</strong>: Supabase Auth</li>
+                <li><strong>Database</strong>: Supabase PostgreSQL</li>
+                <li><strong>Storage</strong>: Supabase Storage</li>
+                <li>
+                    <strong>API Integration</strong>:
+                    <ul>
+                        <li>openFDA API for medication information</li>
+                        <li>RESTful API architecture</li>
+                    </ul>
+                </li>
+            </ul>
+            <h3 id="dependencies">Dependencies</h3>
+            <div class="sourceCode" id="cb1">
+                <pre><code class="language-yaml">dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.9.0
+  flutter_dotenv: ^5.2.1
+  logger: ^2.5.0
+  image_picker: ^1.0.4
+  path: ^1.8.3
+  permission_handler: ^11.0.0
+  http: ^1.4.0
+  intl: ^0.19.0</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Installation</h2>
+            <ol type="1">
+                <li>
+                    <p><strong>Prerequisites</strong></p>
+                    <ul>
+                        <li>Flutter SDK 3.x</li>
+                        <li>Android Studio / VS Code</li>
+                        <li>Android SDK (API level 26+)</li>
+                        <li>Git</li>
+                    </ul>
+                </li>
+                <li>
+                    <p><strong>Setup Steps</strong></p>
+                    <div class="sourceCode" id="cb2">
+                        <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/lucifron28/AkbayMed_User.git
+cd AkbayMed_User
+
+# Install dependencies
+flutter pub get
+
+# Create .env file
+cp .env.example .env</code></pre>
+                    </div>
+                </li>
+                <li>
+                    <p>
+                        <strong>Environment Configuration</strong> Create a <code>.env</code> file
+                        in the root directory with:
+                    </p>
+                    <pre><code class="language-yaml">SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key</code></pre>
+                </li>
+                <li>
+                    <p><strong>Run the App</strong></p>
+                    <div class="sourceCode" id="cb4">
+                        <pre><code class="language-bash">flutter run</code></pre>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Project Structure</h2>
+            <pre><code>lib/
+├── main.dart           # Application entry point
+├── app.dart            # Main app configuration
+└── screens/           # UI screens
+    ├── home_screen.dart
+    ├── login_screen.dart
+    ├── registration_screen.dart
+    ├── donation_screen.dart
+    ├── request_screen.dart
+    └── profile_screen.dart</code></pre>
+        </div>
+
+        <div class="section">
+            <h2>API Integration</h2>
+            <h3 id="openfda-api">openFDA API</h3>
+            <ul>
+                <li>Endpoint: <code>https://api.fda.gov/drug/label.json</code></li>
+                <li>Used for medication verification and information</li>
+                <li>Implements rate limiting and error handling</li>
+            </ul>
+            <h3 id="supabase-integration">Supabase Integration</h3>
+            <ul>
+                <li>Authentication</li>
+                <li>Real-time database</li>
+                <li>File storage</li>
+                <li>Row Level Security (RLS) policies</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Database Schema</h2>
+            <div data-align="center">
+                <p>
+                    <img
+                        src="assets/screenshots/db-schema.png"
+                        alt="Database Schema Diagram"
+                        width="800"
+                    />
+                </p>
+            </div>
+            <h3 id="users-table">Users Table</h3>
+            <div class="sourceCode" id="cb6">
+                <pre><code class="language-sql">CREATE TABLE users (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    avatar_url TEXT,
+    is_verified BOOLEAN NOT NULL DEFAULT TRUE,
+    donation_count BIGINT NOT NULL DEFAULT 0
+);</code></pre>
+            </div>
+            <h3 id="medications-table">Medications Table</h3>
+            <div class="sourceCode" id="cb7">
+                <pre><code class="language-sql">CREATE TABLE medications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);</code></pre>
+            </div>
+            <h3 id="donations-table">Donations Table</h3>
+            <div class="sourceCode" id="cb8">
+                <pre><code class="language-sql">CREATE TABLE donations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    donor_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
+    quantity INTEGER NOT NULL,
+    expiration_date DATE NOT NULL,
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);</code></pre>
+            </div>
+            <h3 id="requests-table">Requests Table</h3>
+            <div class="sourceCode" id="cb9">
+                <pre><code class="language-sql">CREATE TABLE requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    patient_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
+    quantity INTEGER NOT NULL,
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);</code></pre>
+            </div>
+            <h3 id="inventory-table">Inventory Table</h3>
+            <div class="sourceCode" id="cb10">
+                <pre><code class="language-sql">CREATE TABLE inventory (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    medication_id UUID REFERENCES medications(id),
+    quantity INTEGER NOT NULL DEFAULT 0,
+    expiration_date DATE,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);</code></pre>
+            </div>
+            <h3 id="appointments-table">Appointments Table</h3>
+            <div class="sourceCode" id="cb11">
+                <pre><code class="language-sql">CREATE TABLE appointments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id),
+    donation_id UUID REFERENCES donations(id),
+    request_id UUID REFERENCES requests(id),
+    appointment_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    type VARCHAR NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);</code></pre>
+            </div>
+            <h3 id="table-relationships">Table Relationships</h3>
+            <ul>
+                <li>
+                    <strong>Users</strong> (1) → (N) <strong>Donations</strong>: One user can
+                    make multiple donations
+                </li>
+                <li>
+                    <strong>Users</strong> (1) → (N) <strong>Requests</strong>: One user can
+                    make multiple requests
+                </li>
+                <li>
+                    <strong>Users</strong> (1) → (N) <strong>Appointments</strong>: One user can
+                    have multiple appointments
+                </li>
+                <li>
+                    <strong>Medications</strong> (1) → (N) <strong>Donations</strong>: One
+                    medication can be donated multiple times
+                </li>
+                <li>
+                    <strong>Medications</strong> (1) → (N) <strong>Requests</strong>: One
+                    medication can be requested multiple times
+                </li>
+                <li>
+                    <strong>Medications</strong> (1) → (1) <strong>Inventory</strong>: One
+                    medication has one inventory record
+                </li>
+                <li>
+                    <strong>Donations</strong> (1) → (N) <strong>Appointments</strong>: One
+                    donation can have multiple appointments
+                </li>
+                <li>
+                    <strong>Requests</strong> (1) → (N) <strong>Appointments</strong>: One
+                    request can have multiple appointments
+                </li>
+            </ul>
+            <h3 id="key-features">Key Features</h3>
+            <ul>
+                <li>UUID primary keys for all tables</li>
+                <li>Automatic timestamp management for created_at and updated_at</li>
+                <li>Foreign key constraints for referential integrity</li>
+                <li>Default values for status fields</li>
+                <li>Proper indexing on frequently queried columns</li>
+                <li>Timestamp with time zone for user-related timestamps</li>
+                <li>Timestamp without time zone for business logic timestamps</li>
+            </ul>
+            <h3 id="database-functions-and-triggers">Database Functions and Triggers</h3>
+            <h4 id="donation-count-management">Donation Count Management</h4>
+            <div class="sourceCode" id="cb12">
+                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION increment_donation_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR 
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+        UPDATE public.users
+        SET donation_count = donation_count + 1
+        WHERE id = NEW.donor_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+            </div>
+            <p>
+                <strong>Purpose</strong>: Automatically tracks and updates the donation count
+                for users - Triggers when a donation is approved - Updates the user's
+                donation_count in the users table - Handles both new donations and status
+                changes
+            </p>
+            <h4 id="donation-appointment-management">Donation Appointment Management</h4>
+            <div class="sourceCode" id="cb13">
+                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION create_donation_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved')
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM appointments
+      WHERE donation_id = NEW.id
+    ) THEN
+      INSERT INTO appointments (
+        user_id,
+        donation_id,
+        appointment_date,
+        type,
+        created_at
+      )
+      VALUES (
+        NEW.donor_id,
+        NEW.id,
+        CURRENT_TIMESTAMP + INTERVAL '3 days',
+        'dropoff',
+        NOW()
+      );
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+            </div>
+            <p>
+                <strong>Purpose</strong>: Automatically creates dropoff appointments for
+                approved donations - Creates appointments 3 days after donation approval -
+                Prevents duplicate appointments - Links appointments to both users and
+                donations
+            </p>
+            <h4 id="request-appointment-management">Request Appointment Management</h4>
+            <div class="sourceCode" id="cb14">
+                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION create_request_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved')
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM appointments
+      WHERE request_id = NEW.id
+    ) THEN
+      INSERT INTO appointments (
+        user_id,
+        request_id,
+        appointment_date,
+        type,
+        created_at
+      )
+      VALUES (
+        NEW.patient_id,
+        NEW.id,
+        CURRENT_TIMESTAMP + INTERVAL '3 days',
+        'pickup',
+        NOW()
+      );
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+            </div>
+            <p>
+                <strong>Purpose</strong>: Automatically creates pickup appointments for
+                approved requests - Creates appointments 3 days after request approval -
+                Prevents duplicate appointments - Links appointments to both users and
+                requests
+            </p>
+            <h4 id="inventory-management">Inventory Management</h4>
+            <h5 id="request-inventory-update">Request Inventory Update</h5>
+            <div class="sourceCode" id="cb15">
+                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION update_inventory_from_request()
+RETURNS TRIGGER AS $$
+DECLARE
+  total_available INTEGER;
+  remaining_request INTEGER := NEW.quantity;
+  rec RECORD;
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL)
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+    SELECT COALESCE(SUM(quantity), 0) INTO total_available
+    FROM inventory
+    WHERE medication_id = NEW.medication_id
+    AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE);
+
+    IF total_available < NEW.quantity THEN
+      RAISE EXCEPTION 'Insufficient inventory for medication_id %: requested %, available %',
+        NEW.medication_id, NEW.quantity, total_available;
+    END IF;
+
+    FOR rec IN (
+      SELECT id, quantity
+      FROM inventory
+      WHERE medication_id = NEW.medication_id
+      AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE)
+      AND quantity > 0
+      ORDER BY COALESCE(expiration_date, '9999-12-31'::DATE) ASC
+    ) LOOP
+      IF remaining_request <= 0 THEN
+        EXIT;
+      END IF;
+      DECLARE
+        deduct_amount INTEGER := LEAST(remaining_request, rec.quantity);
+      BEGIN
+        UPDATE inventory
+        SET quantity = quantity - deduct_amount,
+            updated_at = NOW()
+        WHERE id = rec.id;
+        remaining_request := remaining_request - deduct_amount;
+      END;
+    END LOOP;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+            </div>
+            <p>
+                <strong>Purpose</strong>: Manages inventory levels when requests are approved
+                - Validates available inventory before processing - Uses FIFO (First In, First
+                Out) method for inventory management - Considers expiration dates when
+                allocating inventory - Updates inventory quantities automatically - Prevents
+                over-allocation of medications
+            </p>
+            <h5 id="donation-inventory-update">Donation Inventory Update</h5>
+            <div class="sourceCode" id="cb16">
+                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION update_inventory_from_donation()
+RETURNS TRIGGER AS $$
+DECLARE
+  remaining_quantity INTEGER := NEW.quantity;
+  rec RECORD;
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL)
+     OR (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+    INSERT INTO inventory (
+      medication_id,
+      quantity,
+      expiration_date,
+      source,
+      donation_id,
+      created_at,
+      updated_at
+    )
+    VALUES (
+      NEW.medication_id,
+      NEW.quantity,
+      NEW.expiration_date,
+      'donation',
+      NEW.id,
+      NOW(),
+      NOW()
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+            </div>
+            <p>
+                <strong>Purpose</strong>: Manages inventory levels when donations are approved
+                - Creates new inventory entries for approved donations - Records medication
+                quantity and expiration date - Tracks donation source and reference -
+                Maintains inventory tracking - Updates timestamps for tracking
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Storage Configuration</h2>
+            <h4 id="avatar-storage">Avatar Storage</h4>
+            <ul>
+                <li><strong>Bucket Name</strong>: <code>avatars</code></li>
+                <li><strong>Purpose</strong>: Stores user profile pictures</li>
+                <li>
+                    <strong>Configuration</strong>:
+                    <ul>
+                        <li>Public access for viewing</li>
+                        <li>Secure upload process</li>
+                        <li>Automatic URL generation</li>
+                        <li>File size limits and type restrictions</li>
+                    </ul>
+                </li>
+            </ul>
+            <h4 id="integration-with-app">Integration with App</h4>
+            <ol type="1">
+                <li>
+                    <strong>Avatar Upload</strong>:
+                    <ul>
+                        <li>User selects image in profile screen</li>
+                        <li>Image is processed and compressed</li>
+                        <li>Uploaded to Supabase Storage</li>
+                        <li>URL stored in user's avatar_url field</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Avatar Display</strong>:
+                    <ul>
+                        <li>Retrieved from storage using avatar_url</li>
+                        <li>Cached for performance</li>
+                        <li>Fallback to default avatar if not found</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Trigger Implementation Details</h2>
+            <ol type="1">
+                <li>
+                    <strong>Donation Count Trigger</strong>
+                    <ul>
+                        <li>Event: AFTER INSERT OR UPDATE</li>
+                        <li>Table: donations</li>
+                        <li>Condition: status = 'approved'</li>
+                        <li>Action: Increments user's donation_count</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Donation Appointment Trigger</strong>
+                    <ul>
+                        <li>Event: AFTER INSERT OR UPDATE</li>
+                        <li>Table: donations</li>
+                        <li>Condition: status = 'approved'</li>
+                        <li>Action: Creates dropoff appointment</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Donation Inventory Trigger</strong>
+                    <ul>
+                        <li>Event: AFTER INSERT OR UPDATE</li>
+                        <li>Table: donations</li>
+                        <li>Condition: status = 'approved'</li>
+                        <li>Action: Adds to inventory</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Request Appointment Trigger</strong>
+                    <ul>
+                        <li>Event: AFTER INSERT OR UPDATE</li>
+                        <li>Table: requests</li>
+                        <li>Condition: status = 'approved'</li>
+                        <li>Action: Creates pickup appointment</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Request Inventory Trigger</strong>
+                    <ul>
+                        <li>Event: AFTER INSERT OR UPDATE</li>
+                        <li>Table: requests</li>
+                        <li>Condition: status = 'approved'</li>
+                        <li>Action: Updates inventory quantities</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Error Handling</h2>
+            <ul>
+                <li>Inventory validation before updates</li>
+                <li>Exception handling for insufficient stock</li>
+                <li>Duplicate appointment prevention</li>
+                <li>Transaction management for data consistency</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>UI/UX Design</h2>
+            <h3 id="design-system">Design System</h3>
+            <ul>
+                <li>Material 3 components</li>
+                <li>Healthcare-focused color palette</li>
+                <li>Accessible design elements</li>
+                <li>Responsive layouts</li>
+            </ul>
+            <h3 id="color-scheme">Color Scheme</h3>
+            <ul>
+                <li>Primary: <code>#00796B</code> (Teal)</li>
+                <li>Secondary: <code>#004D40</code> (Dark Teal)</li>
+                <li>Background: <code>#E0F2F1</code> (Light Teal)</li>
+                <li>Accent: <code>#B2DFDB</code> (Pale Teal)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
