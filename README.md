@@ -1,3 +1,7 @@
+---
+export_on_save:
+  output_format: pdf
+---
 # AkbayMed
 
 <div id="logo" align="center">
@@ -40,6 +44,7 @@ A Flutter-based Android application designed to facilitate medication donation a
       - [Inventory Management](#inventory-management)
         - [Request Inventory Update](#request-inventory-update)
         - [Donation Inventory Update](#donation-inventory-update)
+    - [Row Level Security (RLS)](#row-level-security-rls)
     - [Storage Configuration](#storage-configuration)
       - [Avatar Storage](#avatar-storage)
       - [Integration with App](#integration-with-app)
@@ -498,6 +503,109 @@ $$ LANGUAGE plpgsql;
 - Tracks donation source and reference
 - Maintains inventory tracking
 - Updates timestamps for tracking
+
+### Row Level Security (RLS)
+```sql
+-- Enable RLS on all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE medications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+
+-- Users table policies
+CREATE POLICY "Users can view their own profile"
+    ON users FOR SELECT
+    USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile"
+    ON users FOR UPDATE
+    USING (auth.uid() = id);
+
+-- Medications table policies
+CREATE POLICY "Anyone can view medications"
+    ON medications FOR SELECT
+    USING (true);
+
+CREATE POLICY "Only admins can modify medications"
+    ON medications FOR ALL
+    USING (auth.uid() IN (SELECT id FROM users WHERE role = 'admin'));
+
+-- Donations table policies
+CREATE POLICY "Users can view their own donations"
+    ON donations FOR SELECT
+    USING (auth.uid() = donor_id);
+
+CREATE POLICY "Users can create donations"
+    ON donations FOR INSERT
+    WITH CHECK (auth.uid() = donor_id);
+
+CREATE POLICY "Users can update their own donations"
+    ON donations FOR UPDATE
+    USING (auth.uid() = donor_id);
+
+-- Requests table policies
+CREATE POLICY "Users can view their own requests"
+    ON requests FOR SELECT
+    USING (auth.uid() = patient_id);
+
+CREATE POLICY "Users can create requests"
+    ON requests FOR INSERT
+    WITH CHECK (auth.uid() = patient_id);
+
+CREATE POLICY "Users can update their own requests"
+    ON requests FOR UPDATE
+    USING (auth.uid() = patient_id);
+
+-- Inventory table policies
+CREATE POLICY "Anyone can view inventory"
+    ON inventory FOR SELECT
+    USING (true);
+
+CREATE POLICY "Only admins can modify inventory"
+    ON inventory FOR ALL
+    USING (auth.uid() IN (SELECT id FROM users WHERE role = 'admin'));
+
+-- Appointments table policies
+CREATE POLICY "Users can view their own appointments"
+    ON appointments FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create appointments"
+    ON appointments FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own appointments"
+    ON appointments FOR UPDATE
+    USING (auth.uid() = user_id);
+
+-- Storage policies
+CREATE POLICY "Users can upload their own avatars"
+    ON storage.objects FOR INSERT
+    WITH CHECK (
+        bucket_id = 'avatars' AND
+        auth.uid()::text = (storage.foldername(name))[1]
+    );
+
+CREATE POLICY "Anyone can view avatars"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'avatars');
+
+CREATE POLICY "Users can update their own avatars"
+    ON storage.objects FOR UPDATE
+    USING (
+        bucket_id = 'avatars' AND
+        auth.uid()::text = (storage.foldername(name))[1]
+    );
+
+CREATE POLICY "Users can delete their own avatars"
+    ON storage.objects FOR DELETE
+    USING (
+        bucket_id = 'avatars' AND
+        auth.uid()::text = (storage.foldername(name))[1]
+    );
+```
 
 ### Storage Configuration
 
