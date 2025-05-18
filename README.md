@@ -1,7 +1,3 @@
----
-export_on_save:
-  output_format: pdf
----
 # AkbayMed
 
 <div id="logo" align="center">
@@ -11,6 +7,7 @@ export_on_save:
 A Flutter-based Android application designed to facilitate medication donation and distribution in Philippine healthcare centers. The app connects donors with patients in need, ensuring safe and transparent medicine redistribution.
 
 ## Table of Contents
+
 - [AkbayMed](#akbaymed)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
@@ -59,6 +56,7 @@ A Flutter-based Android application designed to facilitate medication donation a
 ## Features
 
 ### Authentication
+
 Secure and user-friendly authentication system for both donors and patients.
 
 <div align="center">
@@ -72,6 +70,7 @@ Secure and user-friendly authentication system for both donors and patients.
 - Profile management with avatar upload
 
 ### Medication Donation
+
 Streamlined process for donors to contribute medications to those in need.
 
 <div align="center">
@@ -85,6 +84,7 @@ Streamlined process for donors to contribute medications to those in need.
 - Donation history and status tracking
 
 ### Medication Requests
+
 Easy-to-use interface for patients to request needed medications.
 
 <div align="center">
@@ -97,6 +97,7 @@ Easy-to-use interface for patients to request needed medications.
 - View request history
 
 ### User Profile
+
 Personalized user experience with comprehensive profile management.
 
 <div align="center">
@@ -110,6 +111,7 @@ Personalized user experience with comprehensive profile management.
 - Manage account settings
 
 ### Home Dashboard
+
 Centralized hub for all user activities and quick access to features.
 
 <div align="center">
@@ -124,6 +126,7 @@ Centralized hub for all user activities and quick access to features.
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: Flutter 3.29.3
 - **Language**: Dart 3.7.2
 - **UI Components**: Material 3
@@ -131,14 +134,16 @@ Centralized hub for all user activities and quick access to features.
 - **Navigation**: Flutter Navigator 2.0
 
 ### Backend
+
 - **Authentication**: Supabase Auth
 - **Database**: Supabase PostgreSQL
 - **Storage**: Supabase Storage
-- **API Integration**: 
+- **API Integration**:
   - openFDA API for medication information
   - RESTful API architecture
 
 ### Dependencies
+
 ```yaml
 dependencies:
   flutter:
@@ -156,12 +161,14 @@ dependencies:
 ## Installation
 
 1. **Prerequisites**
+
    - Flutter SDK 3.x
    - Android Studio / VS Code
    - Android SDK (API level 26+)
    - Git
 
 2. **Setup Steps**
+
    ```bash
    # Clone the repository
    git clone https://github.com/lucifron28/AkbayMed_User.git
@@ -176,6 +183,7 @@ dependencies:
 
 3. **Environment Configuration**
    Create a `.env` file in the root directory with:
+
    ```
    SUPABASE_URL=your_supabase_url
    SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -204,11 +212,13 @@ lib/
 ## API Integration
 
 ### openFDA API
+
 - Endpoint: `https://api.fda.gov/drug/label.json`
 - Used for medication verification and information
 - Implements rate limiting and error handling
 
 ### Supabase Integration
+
 - Authentication
 - Real-time database
 - File storage
@@ -221,6 +231,7 @@ lib/
 </div>
 
 ### Users Table
+
 ```sql
 CREATE TABLE users (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
@@ -235,6 +246,7 @@ CREATE TABLE users (
 ```
 
 ### Medications Table
+
 ```sql
 CREATE TABLE medications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -246,6 +258,7 @@ CREATE TABLE medications (
 ```
 
 ### Donations Table
+
 ```sql
 CREATE TABLE donations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -259,6 +272,7 @@ CREATE TABLE donations (
 ```
 
 ### Requests Table
+
 ```sql
 CREATE TABLE requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -271,6 +285,7 @@ CREATE TABLE requests (
 ```
 
 ### Inventory Table
+
 ```sql
 CREATE TABLE inventory (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -283,6 +298,7 @@ CREATE TABLE inventory (
 ```
 
 ### Appointments Table
+
 ```sql
 CREATE TABLE appointments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -296,6 +312,7 @@ CREATE TABLE appointments (
 ```
 
 ### Table Relationships
+
 - **Users** (1) → (N) **Donations**: One user can make multiple donations
 - **Users** (1) → (N) **Requests**: One user can make multiple requests
 - **Users** (1) → (N) **Appointments**: One user can have multiple appointments
@@ -306,6 +323,7 @@ CREATE TABLE appointments (
 - **Requests** (1) → (N) **Appointments**: One request can have multiple appointments
 
 ### Key Features
+
 - UUID primary keys for all tables
 - Automatic timestamp management for created_at and updated_at
 - Foreign key constraints for referential integrity
@@ -317,11 +335,12 @@ CREATE TABLE appointments (
 ### Database Functions and Triggers
 
 #### Donation Count Management
+
 ```sql
 CREATE OR REPLACE FUNCTION increment_donation_count()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR 
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR
        (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
         UPDATE public.users
         SET donation_count = donation_count + 1
@@ -331,12 +350,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+
 **Purpose**: Automatically tracks and updates the donation count for users
+
 - Triggers when a donation is approved
 - Updates the user's donation_count in the users table
 - Handles both new donations and status changes
 
 #### Donation Appointment Management
+
 ```sql
 CREATE OR REPLACE FUNCTION create_donation_appointment()
 RETURNS TRIGGER AS $$
@@ -367,12 +389,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+
 **Purpose**: Automatically creates dropoff appointments for approved donations
+
 - Creates appointments 3 days after donation approval
 - Prevents duplicate appointments
 - Links appointments to both users and donations
 
 #### Request Appointment Management
+
 ```sql
 CREATE OR REPLACE FUNCTION create_request_appointment()
 RETURNS TRIGGER AS $$
@@ -403,7 +428,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+
 **Purpose**: Automatically creates pickup appointments for approved requests
+
 - Creates appointments 3 days after request approval
 - Prevents duplicate appointments
 - Links appointments to both users and requests
@@ -411,6 +438,7 @@ $$ LANGUAGE plpgsql;
 #### Inventory Management
 
 ##### Request Inventory Update
+
 ```sql
 CREATE OR REPLACE FUNCTION update_inventory_from_request()
 RETURNS TRIGGER AS $$
@@ -457,7 +485,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+
 **Purpose**: Manages inventory levels when requests are approved
+
 - Validates available inventory before processing
 - Uses FIFO (First In, First Out) method for inventory management
 - Considers expiration dates when allocating inventory
@@ -465,6 +495,7 @@ $$ LANGUAGE plpgsql;
 - Prevents over-allocation of medications
 
 ##### Donation Inventory Update
+
 ```sql
 CREATE OR REPLACE FUNCTION update_inventory_from_donation()
 RETURNS TRIGGER AS $$
@@ -497,7 +528,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+
 **Purpose**: Manages inventory levels when donations are approved
+
 - Creates new inventory entries for approved donations
 - Records medication quantity and expiration date
 - Tracks donation source and reference
@@ -505,6 +538,7 @@ $$ LANGUAGE plpgsql;
 - Updates timestamps for tracking
 
 ### Row Level Security (RLS)
+
 ```sql
 -- Enable RLS on all tables
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -610,6 +644,7 @@ CREATE POLICY "Users can delete their own avatars"
 ### Storage Configuration
 
 #### Avatar Storage
+
 - **Bucket Name**: `avatars`
 - **Purpose**: Stores user profile pictures
 - **Configuration**:
@@ -619,7 +654,9 @@ CREATE POLICY "Users can delete their own avatars"
   - File size limits and type restrictions
 
 #### Integration with App
+
 1. **Avatar Upload**:
+
    - User selects image in profile screen
    - Image is processed and compressed
    - Uploaded to Supabase Storage
@@ -633,24 +670,28 @@ CREATE POLICY "Users can delete their own avatars"
 ### Trigger Implementation Details
 
 1. **Donation Count Trigger**
+
    - Event: AFTER INSERT OR UPDATE
    - Table: donations
    - Condition: status = 'approved'
    - Action: Increments user's donation_count
 
 2. **Donation Appointment Trigger**
+
    - Event: AFTER INSERT OR UPDATE
    - Table: donations
    - Condition: status = 'approved'
    - Action: Creates dropoff appointment
 
 3. **Donation Inventory Trigger**
+
    - Event: AFTER INSERT OR UPDATE
    - Table: donations
    - Condition: status = 'approved'
    - Action: Adds to inventory
 
 4. **Request Appointment Trigger**
+
    - Event: AFTER INSERT OR UPDATE
    - Table: requests
    - Condition: status = 'approved'
@@ -663,6 +704,7 @@ CREATE POLICY "Users can delete their own avatars"
    - Action: Updates inventory quantities
 
 ### Error Handling
+
 - Inventory validation before updates
 - Exception handling for insufficient stock
 - Duplicate appointment prevention
@@ -671,12 +713,14 @@ CREATE POLICY "Users can delete their own avatars"
 ## UI/UX Design
 
 ### Design System
+
 - Material 3 components
 - Healthcare-focused color palette
 - Accessible design elements
 - Responsive layouts
 
 ### Color Scheme
+
 - Primary: `#00796B` (Teal)
 - Secondary: `#004D40` (Dark Teal)
 - Background: `#E0F2F1` (Light Teal)
@@ -685,11 +729,13 @@ CREATE POLICY "Users can delete their own avatars"
 ## Development Setup
 
 1. **IDE Configuration**
+
    - Install Flutter and Dart plugins
    - Configure Android SDK
    - Set up Flutter SDK path
 
 2. **Code Style**
+
    - Follow Flutter style guide
    - Use Flutter lints
    - Implement proper error handling
