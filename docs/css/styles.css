@@ -1,11 +1,11 @@
 :root {
     /* AkbayMed Color Theme */
-    --primary-color: #00796B;      /* Teal 700 */
-    --secondary-color: #004D40;    /* Teal 900 */
-    --accent-color: #B2DFDB;       /* Teal 100 */
-    --background-color: #FFFFFF;   /* Teal 50 */
-    --surface-color: #F5F5F5;
-    --text-color: #333333;         /* Blue Grey 900 */
+    --primary-color: #00796B;
+    --secondary-color: #004D40;
+    --accent-color: #B2DFDB;
+    --background-color: #a9eeee;
+    --surface-color: rgba(255, 255, 255, 0.8); 
+    --text-color: #333333;
     --text-secondary: #666666;
     --border-color: #E0E0E0;
     --code-bg: #2D2D2D;
@@ -39,6 +39,8 @@ body {
 .sidebar {
     width: var(--sidebar-width);
     background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-right: 1px solid var(--border-color);
     position: fixed;
     height: 100vh;
@@ -74,6 +76,17 @@ body {
 
 .nav-links li {
     margin-bottom: calc(var(--spacing-unit) * 1.5);
+    position: relative;
+}
+
+.nav-links li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, rgb(197, 184, 184), rgb(141, 199, 141), var(--accent-color));
 }
 
 .nav-links a {
@@ -101,6 +114,8 @@ body {
     list-style: none;
     margin-left: calc(var(--spacing-unit) * 2);
     margin-top: var(--spacing-unit);
+    padding-top: var(--spacing-unit);
+    border-top: 1px solid var(--border-color);
 }
 
 .nav-links ul a {
@@ -142,11 +157,14 @@ body {
 
 /* Card Styles */
 .card {
-    background-color: var(--background-color);
+    background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: var(--border-radius);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--card-shadow);
     padding: calc(var(--spacing-unit) * 3);
     margin-bottom: calc(var(--spacing-unit) * 3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .card h3 {
@@ -166,9 +184,13 @@ body {
 
 .feature-card {
     background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: calc(var(--spacing-unit) * 2);
     border-radius: var(--border-radius);
     text-align: center;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .feature-card i {
@@ -195,8 +217,12 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    background-color: var(--accent-color);
+    background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 4px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .prerequisite-item i {
@@ -308,7 +334,10 @@ body {
     text-align: center;
     padding: calc(var(--spacing-unit) * 2);
     background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tech-item i {
