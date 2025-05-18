@@ -33,6 +33,7 @@
                         <ul>
                             <li><a href="#introduction">Introduction</a></li>
                             <li><a href="#installation">Installation</a></li>
+                            <li><a href="#env-config">Environment Configuration</a></li>
                             <li><a href="#prerequisites">Prerequisites</a></li>
                         </ul>
                     </li>
@@ -65,8 +66,19 @@
                         <a href="#database"><i class="fas fa-database"></i> Database</a>
                         <ul>
                             <li><a href="#tables">Tables</a></li>
+                            <li><a href="#table-relationships">Table Relationships</a></li>
+                            <li><a href="#key-features">Key Features</a></li>
+                            <li><a href="#database-functions">Database Functions</a>
+                                <ul>
+                                    <li><a href="#donation-count">Donation Count</a></li>
+                                    <li><a href="#donation-appointment">Donation Appointment</a></li>
+                                    <li><a href="#request-appointment">Request Appointment</a></li>
+                                    <li><a href="#inventory-management">Inventory Management</a></li>
+                                </ul>
+                            </li>
                             <li><a href="#row-level-security">Row Level Security</a></li>
                             <li><a href="#storage-configuration">Storage Configuration</a></li>
+                            <li><a href="#error-handling">Error Handling</a></li>
                         </ul>
                     </li>
                     <li>
@@ -75,7 +87,6 @@
                             <li><a href="#design-system">Design System</a></li>
                             <li><a href="#color-scheme">Color Scheme</a></li>
                             <li><a href="#typography">Typography</a></li>
-                            <li><a href="#components">Components</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -134,6 +145,30 @@ cp .env.example .env</code></pre>
                         </div>
                     </div>
 
+                    <div id="env-config" class="card">
+                        <h3>Environment Configuration</h3>
+                        <p>Create a `.env` file in the root directory with the following variables:</p>
+                        <div class="code-block">
+                            <pre><code class="language-bash"># Supabase Configuration
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional: Development Configuration
+DEBUG=true
+LOG_LEVEL=debug</code></pre>
+                        </div>
+                        <div class="note">
+                            <h4>Getting Supabase Credentials:</h4>
+                            <ol>
+                                <li>Go to your Supabase project dashboard</li>
+                                <li>Click on the "Settings" icon in the sidebar</li>
+                                <li>Select "API" from the settings menu</li>
+                                <li>Copy the "Project URL" and paste it as your SUPABASE_URL</li>
+                                <li>Copy the "anon public" key and paste it as your SUPABASE_ANON_KEY</li>
+                            </ol>
+                        </div>
+                    </div>
+
                     <div id="prerequisites" class="card">
                         <h3>Prerequisites</h3>
                         <div class="prerequisites-grid">
@@ -176,8 +211,15 @@ cp .env.example .env</code></pre>
                                     <li><i class="fas fa-check"></i> Profile management with avatar upload</li>
                                 </ul>
                             </div>
-                            <div class="feature-image">
-                                <img src="assets/screenshots/login-screen.jpg" alt="Login Screen" />
+                            <div class="feature-images">
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/login-screen.jpg" alt="Login Screen" />
+                                    <p class="image-caption">Login Screen</p>
+                                </div>
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/registration-screen.jpg" alt="Registration Screen" />
+                                    <p class="image-caption">Registration Screen</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,8 +236,15 @@ cp .env.example .env</code></pre>
                                     <li><i class="fas fa-check"></i> Donation history and status tracking</li>
                                 </ul>
                             </div>
-                            <div class="feature-image">
-                                <img src="assets/screenshots/donation-screen.jpg" alt="Donation Screen" />
+                            <div class="feature-images">
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/donation-screen.jpg" alt="Donation Screen" />
+                                    <p class="image-caption">Donation Screen</p>
+                                </div>
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/search-suggestions.jpg" alt="Medication Search" />
+                                    <p class="image-caption">Medication Search</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -214,6 +263,7 @@ cp .env.example .env</code></pre>
                             </div>
                             <div class="feature-image">
                                 <img src="assets/screenshots/request-screen.jpg" alt="Request Screen" />
+                                <p class="image-caption">Request Screen</p>
                             </div>
                         </div>
                     </div>
@@ -230,8 +280,15 @@ cp .env.example .env</code></pre>
                                     <li><i class="fas fa-check"></i> Manage account settings</li>
                                 </ul>
                             </div>
-                            <div class="feature-image">
-                                <img src="assets/screenshots/profile-screen.jpg" alt="Profile Screen" />
+                            <div class="feature-images">
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/profile-screen.jpg" alt="Profile Screen" />
+                                    <p class="image-caption">Profile Screen</p>
+                                </div>
+                                <div class="feature-image">
+                                    <img src="assets/screenshots/update-profile-feature.jpg" alt="Update Profile" />
+                                    <p class="image-caption">Update Profile</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -396,7 +453,285 @@ CREATE TABLE medications (
     description TEXT,
     category TEXT NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Donations Table
+CREATE TABLE donations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    donor_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
+    quantity INTEGER NOT NULL,
+    expiration_date DATE NOT NULL,
+    -- Note: Default 'approved' status is for prototype demonstration purposes only
+    -- In production, this should be 'pending' with proper approval workflow
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Requests Table
+CREATE TABLE requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    patient_id UUID NOT NULL REFERENCES users(id),
+    medication_id UUID NOT NULL REFERENCES medications(id),
+    quantity INTEGER NOT NULL,
+    -- Note: Default 'approved' status is for prototype demonstration purposes only
+    -- In production, this should be 'pending' with proper approval workflow
+    status VARCHAR NOT NULL DEFAULT 'approved',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Inventory Table
+CREATE TABLE inventory (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    medication_id UUID REFERENCES medications(id),
+    quantity INTEGER NOT NULL DEFAULT 0,
+    expiration_date DATE,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
+
+-- Appointments Table
+CREATE TABLE appointments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id),
+    donation_id UUID REFERENCES donations(id),
+    request_id UUID REFERENCES requests(id),
+    appointment_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    type VARCHAR NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );</code></pre>
+                        </div>
+                    </div>
+
+                    <div id="table-relationships" class="card">
+                        <h3>Table Relationships</h3>
+                        <ul>
+                            <li><strong>Users</strong> (1) → (N) <strong>Donations</strong>: One user can make multiple donations</li>
+                            <li><strong>Users</strong> (1) → (N) <strong>Requests</strong>: One user can make multiple requests</li>
+                            <li><strong>Users</strong> (1) → (N) <strong>Appointments</strong>: One user can have multiple appointments</li>
+                            <li><strong>Medications</strong> (1) → (N) <strong>Donations</strong>: One medication can be donated multiple times</li>
+                            <li><strong>Medications</strong> (1) → (N) <strong>Requests</strong>: One medication can be requested multiple times</li>
+                            <li><strong>Medications</strong> (1) → (1) <strong>Inventory</strong>: One medication has one inventory record</li>
+                            <li><strong>Donations</strong> (1) → (N) <strong>Appointments</strong>: One donation can have multiple appointments</li>
+                            <li><strong>Requests</strong> (1) → (N) <strong>Appointments</strong>: One request can have multiple appointments</li>
+                        </ul>
+                    </div>
+
+                    <div id="key-features" class="card">
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li>UUID primary keys for all tables</li>
+                            <li>Automatic timestamp management for created_at and updated_at</li>
+                            <li>Foreign key constraints for referential integrity</li>
+                            <li>Default values for status fields</li>
+                            <li>Proper indexing on frequently queried columns</li>
+                            <li>Timestamp with time zone for user-related timestamps</li>
+                            <li>Timestamp without time zone for business logic timestamps</li>
+                        </ul>
+                    </div>
+
+                    <div id="database-functions" class="card">
+                        <h3>Database Functions</h3>
+                        
+                        <div id="donation-count" class="trigger-section">
+                            <h4>Donation Count Management</h4>
+                            <p>Automatically tracks and updates the donation count for users when a donation is approved.</p>
+                            <div class="code-block">
+                                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION increment_donation_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+        UPDATE public.users
+        SET donation_count = donation_count + 1
+        WHERE id = NEW.donor_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER donation_count_trigger
+AFTER INSERT OR UPDATE ON donations
+FOR EACH ROW
+EXECUTE FUNCTION increment_donation_count();</code></pre>
+                            </div>
+                        </div>
+
+                        <div id="donation-appointment" class="trigger-section">
+                            <h4>Donation Appointment Management</h4>
+                            <p>Automatically creates dropoff appointments for approved donations, scheduled 3 days after approval.</p>
+                            <div class="code-block">
+                                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION create_donation_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM appointments
+            WHERE donation_id = NEW.id
+        ) THEN
+            INSERT INTO appointments (
+                user_id,
+                donation_id,
+                appointment_date,
+                type,
+                created_at
+            )
+            VALUES (
+                NEW.donor_id,
+                NEW.id,
+                CURRENT_TIMESTAMP + INTERVAL '3 days',
+                'dropoff',
+                NOW()
+            );
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER donation_appointment_trigger
+AFTER INSERT OR UPDATE ON donations
+FOR EACH ROW
+EXECUTE FUNCTION create_donation_appointment();</code></pre>
+                            </div>
+                        </div>
+
+                        <div id="request-appointment" class="trigger-section">
+                            <h4>Request Appointment Management</h4>
+                            <p>Automatically creates pickup appointments for approved requests, scheduled 3 days after approval.</p>
+                            <div class="code-block">
+                                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION create_request_appointment()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved') OR
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved') THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM appointments
+            WHERE request_id = NEW.id
+        ) THEN
+            INSERT INTO appointments (
+                user_id,
+                request_id,
+                appointment_date,
+                type,
+                created_at
+            )
+            VALUES (
+                NEW.patient_id,
+                NEW.id,
+                CURRENT_TIMESTAMP + INTERVAL '3 days',
+                'pickup',
+                NOW()
+            );
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER request_appointment_trigger
+AFTER INSERT OR UPDATE ON requests
+FOR EACH ROW
+EXECUTE FUNCTION create_request_appointment();</code></pre>
+                            </div>
+                        </div>
+
+                        <div id="inventory-management" class="trigger-section">
+                            <h4>Inventory Management</h4>
+                            <p>Manages inventory levels for both donations and requests, including FIFO allocation and expiration date tracking.</p>
+                            
+                            <h5>Request Inventory Update</h5>
+                            <div class="code-block">
+                                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION update_inventory_from_request()
+RETURNS TRIGGER AS $$
+DECLARE
+    total_available INTEGER;
+    remaining_request INTEGER := NEW.quantity;
+    rec RECORD;
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL) OR
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+        SELECT COALESCE(SUM(quantity), 0) INTO total_available
+        FROM inventory
+        WHERE medication_id = NEW.medication_id
+        AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE);
+
+        IF total_available < NEW.quantity THEN
+            RAISE EXCEPTION 'Insufficient inventory for medication_id %: requested %, available %',
+                NEW.medication_id, NEW.quantity, total_available;
+        END IF;
+
+        FOR rec IN (
+            SELECT id, quantity
+            FROM inventory
+            WHERE medication_id = NEW.medication_id
+            AND (expiration_date IS NULL OR expiration_date >= CURRENT_DATE)
+            AND quantity > 0
+            ORDER BY COALESCE(expiration_date, '9999-12-31'::DATE) ASC
+        ) LOOP
+            IF remaining_request <= 0 THEN
+                EXIT;
+            END IF;
+            DECLARE
+                deduct_amount INTEGER := LEAST(remaining_request, rec.quantity);
+            BEGIN
+                UPDATE inventory
+                SET quantity = quantity - deduct_amount,
+                    updated_at = NOW()
+                WHERE id = rec.id;
+                remaining_request := remaining_request - deduct_amount;
+            END;
+        END LOOP;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER request_inventory_trigger
+AFTER INSERT OR UPDATE ON requests
+FOR EACH ROW
+EXECUTE FUNCTION update_inventory_from_request();</code></pre>
+                            </div>
+
+                            <h5>Donation Inventory Update</h5>
+                            <div class="code-block">
+                                <pre><code class="language-sql">CREATE OR REPLACE FUNCTION update_inventory_from_donation()
+RETURNS TRIGGER AS $$
+DECLARE
+    remaining_quantity INTEGER := NEW.quantity;
+    rec RECORD;
+BEGIN
+    IF (TG_OP = 'INSERT' AND NEW.status = 'approved' AND NEW.medication_id IS NOT NULL) OR
+       (TG_OP = 'UPDATE' AND NEW.status = 'approved' AND OLD.status != 'approved' AND NEW.medication_id IS NOT NULL) THEN
+        INSERT INTO inventory (
+            medication_id,
+            quantity,
+            expiration_date,
+            source,
+            donation_id,
+            created_at,
+            updated_at
+        )
+        VALUES (
+            NEW.medication_id,
+            NEW.quantity,
+            NEW.expiration_date,
+            'donation',
+            NEW.id,
+            NOW(),
+            NOW()
+        );
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER donation_inventory_trigger
+AFTER INSERT OR UPDATE ON donations
+FOR EACH ROW
+EXECUTE FUNCTION update_inventory_from_donation();</code></pre>
+                            </div>
                         </div>
                     </div>
 
@@ -405,15 +740,77 @@ CREATE TABLE medications (
                         <div class="code-block">
                             <pre><code class="language-sql">-- Enable RLS
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE medications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Users table policies
 CREATE POLICY "Users can view their own profile"
-ON users FOR SELECT
-USING (auth.uid() = id);
+    ON users FOR SELECT
+    USING (auth.uid() = id);
 
 CREATE POLICY "Users can update their own profile"
-ON users FOR UPDATE
-USING (auth.uid() = id);</code></pre>
+    ON users FOR UPDATE
+    USING (auth.uid() = id);
+
+-- Medications table policies
+CREATE POLICY "Anyone can view medications"
+    ON medications FOR SELECT
+    USING (true);
+
+CREATE POLICY "Only admins can modify medications"
+    ON medications FOR ALL
+    USING (auth.uid() IN (SELECT id FROM users WHERE role = 'admin'));
+
+-- Donations table policies
+CREATE POLICY "Users can view their own donations"
+    ON donations FOR SELECT
+    USING (auth.uid() = donor_id);
+
+CREATE POLICY "Users can create donations"
+    ON donations FOR INSERT
+    WITH CHECK (auth.uid() = donor_id);
+
+CREATE POLICY "Users can update their own donations"
+    ON donations FOR UPDATE
+    USING (auth.uid() = donor_id);
+
+-- Requests table policies
+CREATE POLICY "Users can view their own requests"
+    ON requests FOR SELECT
+    USING (auth.uid() = patient_id);
+
+CREATE POLICY "Users can create requests"
+    ON requests FOR INSERT
+    WITH CHECK (auth.uid() = patient_id);
+
+CREATE POLICY "Users can update their own requests"
+    ON requests FOR UPDATE
+    USING (auth.uid() = patient_id);
+
+-- Inventory table policies
+CREATE POLICY "Anyone can view inventory"
+    ON inventory FOR SELECT
+    USING (true);
+
+CREATE POLICY "Only admins can modify inventory"
+    ON inventory FOR ALL
+    USING (auth.uid() IN (SELECT id FROM users WHERE role = 'admin'));
+
+-- Appointments table policies
+CREATE POLICY "Users can view their own appointments"
+    ON appointments FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create appointments"
+    ON appointments FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own appointments"
+    ON appointments FOR UPDATE
+    USING (auth.uid() = user_id);</code></pre>
                         </div>
                     </div>
 
@@ -430,8 +827,26 @@ USING (bucket_id = 'avatars');
 
 CREATE POLICY "Users can upload their own avatar"
 ON storage.objects FOR INSERT
-WITH CHECK (bucket_id = 'avatars' AND auth.uid() = owner);</code></pre>
+WITH CHECK (bucket_id = 'avatars' AND auth.uid() = owner);
+
+CREATE POLICY "Users can update their own avatar"
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'avatars' AND auth.uid() = owner);
+
+CREATE POLICY "Users can delete their own avatar"
+ON storage.objects FOR DELETE
+USING (bucket_id = 'avatars' AND auth.uid() = owner);</code></pre>
                         </div>
+                    </div>
+
+                    <div id="error-handling" class="card">
+                        <h3>Error Handling</h3>
+                        <ul>
+                            <li>Inventory validation before updates</li>
+                            <li>Exception handling for insufficient stock</li>
+                            <li>Duplicate appointment prevention</li>
+                            <li>Transaction management for data consistency</li>
+                        </ul>
                     </div>
                 </section>
 
@@ -506,28 +921,6 @@ WITH CHECK (bucket_id = 'avatars' AND auth.uid() = owner);</code></pre>
                                 <p class="body-large">Body Large</p>
                                 <p class="body-medium">Body Medium</p>
                                 <p class="body-small">Body Small</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="components" class="card">
-                        <h3>Components</h3>
-                        <div class="components-grid">
-                            <div class="component-item">
-                                <h4>Buttons</h4>
-                                <div class="component-preview">
-                                    <button class="btn-primary">Primary Button</button>
-                                    <button class="btn-secondary">Secondary Button</button>
-                                </div>
-                            </div>
-                            <div class="component-item">
-                                <h4>Input Fields</h4>
-                                <div class="component-preview">
-                                    <input type="text" placeholder="Text Input" />
-                                    <select>
-                                        <option>Select Option</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
                     </div>
